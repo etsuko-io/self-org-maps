@@ -1,0 +1,5 @@
+numpy
+matplotlib
+black
+Pillow
+opencv-contrib-python

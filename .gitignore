@@ -1,0 +1,7 @@
+*.jpg
+*.jpeg
+*.png
+results
+input-images
+.idea
+.python-version
