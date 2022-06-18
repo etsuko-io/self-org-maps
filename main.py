@@ -182,15 +182,17 @@ def save_image(somap, file_name):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     im = Image.fromarray(np.uint8(somap))
     im.save(path)
-    superres = super_res_pillow_img(im)
-    superres.save(path.replace(".png", "x4.png"))
-    superres2 = super_res_pillow_img(superres)
-    superres2.save(path.replace(".png", "x4.png"))
+    superres = super_res_pillow_img(im, upscale=3)
+    superres.save(path.replace(".png", "x3.png"))
+    superres2 = super_res_pillow_img(superres, upscale=3)
+    superres2.save(path.replace(".png", "x9.png"))
 
 
-def super_res_pillow_img(pil_image: Image) -> Image:
+def super_res_pillow_img(pil_image: Image, upscale: int = 4) -> Image:
     cv_img = np.array(pil_image)
-    cv_superres = super_res_opencv(cv2.cvtColor(cv_img, cv2.COLOR_RGB2BGR))
+    cv_superres = super_res_opencv(
+        cv2.cvtColor(cv_img, cv2.COLOR_RGB2BGR), upscale
+    )
     return Image.fromarray(cv2.cvtColor(cv_superres, cv2.COLOR_BGR2RGB))
 
 
@@ -198,15 +200,15 @@ def img_dir_to_mov(dir: Path):
     pass
 
 
-def super_res_opencv(image, amount=3):
-    if amount not in (2, 3, 4):
+def super_res_opencv(image, upscale: int = 4):
+    if upscale not in (2, 3, 4):
         raise ValueError
     # Create an SR object
     sr = dnn_superres.DnnSuperResImpl_create()
-    model_path = f"EDSR_x{amount}.pb"
+    model_path = f"EDSR_x{upscale}.pb"
     sr.readModel(model_path)
     # Set the desired model and scale to get correct pre- and post-processing
-    sr.setModel("edsr", amount)
+    sr.setModel("edsr", upscale)
     return sr.upsample(image)
 
 
@@ -288,25 +290,24 @@ def train(m, n, input_path, epochs, learn_rates, radius_sqs):
 
 if __name__ == "__main__":
     # Dimensions of the som grid
-    img_width = int(1920 / 4)
-    img_height = int(1080 / 4)
+    img_width = math.ceil(1920 / 9)
+    img_height = math.ceil(1080 / 9)
     avg_dim = (img_width + img_height) / 2
-    input_path = "input-images/Blade_Runner_2049_poster-small.png"
-    epochs = 1
+    input_path = "input-images/tokyo-station.jpeg"
+    epochs = 2
     print(
         f"{epochs} epochs based on {input_path}, @{img_width}x{img_height}px"
     )
     # fmt: off
     learn_rates = [
-        # 0.5,
+        0.5,
         0.75,
-        # 0.99,
+        0.99,
     ]
     # fmt: on
-
     radius_sqs = [
-        # round(avg_dim / 1),
-        # round(avg_dim / 2),
+        round(avg_dim / 1),
+        round(avg_dim / 2),
         round(avg_dim / 4),
         # round(math.pow(avg_dim / 7, 2)),
         # round(math.pow(avg_dim / 3, 2)),
