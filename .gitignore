@@ -5,3 +5,4 @@ results
 input-images
 .idea
 .python-version
+*.pyc

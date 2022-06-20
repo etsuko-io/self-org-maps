@@ -171,21 +171,22 @@ def train_somap(
         radius_sq = radius_0 * np.exp(-epoch * radius_decay)
         # os.makedirs(f"{OUT_PATH}/{current_iter}/epochs")
         save_image(
-            somap=somap,
+            data=somap,
             file_name=f"{current_iter}/epochs/{epoch}.png",
         )
     return somap
 
 
-def save_image(somap, file_name):
+def save_image(data: ndarray, file_name, multires=True):
     path = os.path.join(OUT_PATH, file_name)
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    im = Image.fromarray(np.uint8(somap))
+    im = Image.fromarray(np.uint8(data))
     im.save(path)
-    superres = super_res_pillow_img(im, upscale=3)
-    superres.save(path.replace(".png", "x3.png"))
-    superres2 = super_res_pillow_img(superres, upscale=3)
-    superres2.save(path.replace(".png", "x9.png"))
+    if multires:
+        superres = super_res_pillow_img(im, upscale=3)
+        superres.save(path.replace(".png", "x3.png"))
+        superres2 = super_res_pillow_img(superres, upscale=3)
+        superres2.save(path.replace(".png", "x9.png"))
 
 
 def super_res_pillow_img(pil_image: Image, upscale: int = 4) -> Image:
@@ -195,9 +196,6 @@ def super_res_pillow_img(pil_image: Image, upscale: int = 4) -> Image:
     )
     return Image.fromarray(cv2.cvtColor(cv_superres, cv2.COLOR_BGR2RGB))
 
-
-def img_dir_to_mov(dir: Path):
-    pass
 
 
 def super_res_opencv(image, upscale: int = 4):
