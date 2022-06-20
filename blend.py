@@ -15,5 +15,5 @@ if __name__ == "__main__":
         im2 = im2.convert("RGBA")
 
     for n in range(0, 96):
-        blended = Image.blend(im1, im2, alpha=n/96)
+        blended = Image.blend(im1, im2, alpha=n / 96)
         save_image(np.array(blended), f"im{n}.png", multires=False)
