@@ -74,7 +74,7 @@ if __name__ == "__main__":
     s = SimpleImage(w, h)
     animation = FieldAnimation(image=s.data, field=f)
     animation.field = f
-    save_image(animation.image, f"im0.png", multires=False)
+    save_image(animation.image, "im0.png", multires=False)
     # plt.imshow(animation.image)
     # plt.show()
     for i in range(1, 240):
