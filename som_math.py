@@ -1,4 +1,5 @@
 from functools import lru_cache
+
 import numpy as np
 
 
@@ -62,3 +63,42 @@ def find_bmu(somap, x):
     # unravel_index() returns the coordinates of the BMU
     #  on a 2D grid (i.e. their list indices in a 2D list)
     return np.unravel_index(np.argmin(dist_sq, axis=None), dist_sq.shape)
+
+
+def update_weights(somap, train_ex, learn_rate, radius_sq, bmu_coord, step=3):
+    """
+    Update the weights of the SOM cells when given a single training example
+    and the model parameters along with BMU coordinates as a tuple
+
+    :param somap: the map to update
+    :param train_ex: training example to adjust to
+    :param learn_rate: how quickly the map should adjust to the training
+                        example
+    :param radius_sq: the radius in which a single training example can adjust
+                        the map
+    :param bmu_coord: coordinates of the best-matching-unit on the input map
+    :param step: provides a limit to the area of pixels can be adjusted
+    :return:
+    """
+    g, h = bmu_coord
+    # if radius is close to zero then only BMU is changed
+    if radius_sq < 1e-3:
+        somap[g, h, :] += learn_rate * (train_ex - somap[g, h, :])
+        return somap
+    range_i = range(max(0, g - step), min(somap.shape[0], g + step))
+    range_j = range(max(0, h - step), min(somap.shape[1], h + step))
+    # Change all cells in a small neighborhood of BMU
+    for i in range_i:
+        for j in range_j:
+            # distance of the current pixel to the BMU
+            dist_sq = get_dist_sq(i, j, g, h)
+
+            # todo: where does this dist_func come from, what logic based on?
+            dist_func = get_dist_func(dist_sq, radius_sq)
+
+            # adjust the color to a value in between its current value, and
+            # the training example's value
+            somap[i, j, :] += get_weight_change_value(
+                learn_rate, dist_func, train_ex, somap[i, j, :]
+            )
+    return somap

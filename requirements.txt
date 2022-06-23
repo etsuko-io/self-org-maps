@@ -1,0 +1,7 @@
+numpy
+matplotlib
+black
+Pillow
+opencv-contrib-python
+git+https://github.com/etsuko-io/project-util.git@0.0.10
+celery==5.2.7

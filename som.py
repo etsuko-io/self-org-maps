@@ -1,17 +1,78 @@
 import datetime
 import math
-
-import som_math
 from os.path import join
 
 import matplotlib.pyplot as plt
 import numpy as np
-from project_util.artefact.artefact import Artefact
 from PIL import Image
-from project_util.project.project import Project
+from project_util.artefact.artefact import Artefact
 from project_util.naming.naming import NamingUtil
+from project_util.project.project import Project
 
+import som_math
 from constants import SYMBOL_ETA, SYMBOL_SIGMA_SQ
+
+
+class SingleSom:
+    def __init__(
+        self,
+        width,
+        height,
+        train_data,
+    ):
+        self.width = width
+        self.height = height
+        self.train_data = train_data
+
+    def get_random_grid(self):
+        rand = np.random.RandomState(0)
+        somap = rand.randint(0, 256, (self.width, self.height, 3))
+        return somap
+
+    def train(
+        self,
+        step,
+        epochs,
+        learn_rate,
+        lr_decay,
+        radius_sq,
+        radius_decay,
+    ):
+        """
+        Main routine for training an SOM. It requires an initialized SOM grid
+        or a partially trained grid as parameter
+
+        :param radius_sq:
+        :param lr_decay:
+        :param epochs:
+        :param learn_rate:
+        :param somap:
+        :param step:
+        :return:
+        """
+        somap = self.get_random_grid()
+        rand = np.random.RandomState(0)
+        for epoch in range(epochs):
+            print(f" epoch {epoch}")
+            rand.shuffle(self.train_data)
+            for i, train_ex in enumerate(self.train_data):
+                g, h = som_math.find_bmu(somap, train_ex)
+                somap = som_math.update_weights(
+                    somap, train_ex, learn_rate, radius_sq, (g, h), step=step
+                )
+            # Update learning rate and radius
+            learn_rate = self.decay_value(
+                learn_rate, lr_decay, epoch
+            )
+            radius_sq = self.decay_value(
+                radius_sq, radius_decay, epoch
+            )
+        return somap
+
+    @staticmethod
+    def decay_value(val, decay, epoch) -> float:
+        # decay a value to eventually approach zero with a high enough epoch
+        return val * np.exp(-epoch * decay)
 
 
 class SelfOrgMap:
@@ -37,34 +98,6 @@ class SelfOrgMap:
             im = im.convert("RGB")
             self.train_data = np.array(im).reshape((-1, 3))
         self.complexity = self.get_complexity()
-
-    # Update the weights of the SOM cells when given a single training example
-    # and the model parameters along with BMU coordinates as a tuple
-    def update_weights(
-        self, somap, train_ex, learn_rate, radius_sq, bmu_coord, step=3
-    ):
-        g, h = bmu_coord
-        # if radius is close to zero then only BMU is changed
-        if radius_sq < 1e-3:
-            somap[g, h, :] += learn_rate * (train_ex - somap[g, h, :])
-            return somap
-        range_i = range(max(0, g - step), min(somap.shape[0], g + step))
-        range_j = range(max(0, h - step), min(somap.shape[1], h + step))
-        # Change all cells in a small neighborhood of BMU
-        for i in range_i:
-            for j in range_j:
-                # distance of the current pixel to the BMU
-                dist_sq = som_math.get_dist_sq(i, j, g, h)
-
-                # todo: where does this dist_func come from, what logic based on?
-                dist_func = som_math.get_dist_func(dist_sq, radius_sq)
-
-                # adjust the color to a value in between its current value, and
-                # the training example's value
-                somap[i, j, :] += som_math.get_weight_change_value(
-                    learn_rate, dist_func, train_ex, somap[i, j, :]
-                )
-        return somap
 
     def train_somap(
         self,
@@ -95,7 +128,7 @@ class SelfOrgMap:
             rand.shuffle(self.train_data)
             for i, train_ex in enumerate(self.train_data):
                 g, h = som_math.find_bmu(somap, train_ex)
-                somap = self.update_weights(
+                somap = som_math.update_weights(
                     somap, train_ex, learn_rate, radius_sq, (g, h), step=step
                 )
             # Update learning rate and radius
@@ -138,7 +171,7 @@ class SelfOrgMap:
         print(f"Complexity: {'{:,}'.format(complexity)}")
         return complexity
 
-    def train(self):
+    def train_all(self):
         now = datetime.datetime.now()
         print(f"time: {now}")
         result = dict(variations=[])
@@ -180,10 +213,14 @@ class SelfOrgMap:
         )
         artefact.save()
         artefact_x3 = artefact.get_superres(
-            3, new_name=NamingUtil.insert_suffix(artefact.name, "@x3")
+            3,
+            new_name=NamingUtil.insert_suffix(artefact.name, "@x3"),
+            new_project=self.project.add_folder("x3"),
         )
         artefact_x9 = artefact_x3.get_superres(
-            3, new_name=NamingUtil.insert_suffix(artefact.name, "@x9")
+            3,
+            new_name=NamingUtil.insert_suffix(artefact.name, "@x9"),
+            new_project=self.project.add_folder("x9"),
         )
         artefact.save()
         artefact_x3.save(self.project)

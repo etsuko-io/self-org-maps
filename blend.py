@@ -1,7 +1,8 @@
-from PIL import Image
 import numpy as np
+from PIL import Image
 
 from main import save_image
+
 
 if __name__ == "__main__":
     path1 = "results/2022-06-17T183700/img_[lr-0.5]_[sigma-42]x3.png"
