@@ -82,6 +82,7 @@ def update_weights(somap, train_ex, learn_rate, radius_sq, bmu_coord, step=3):
     """
     g, h = bmu_coord
     # if radius is close to zero then only BMU is changed
+    # todo: optimization: reduce step together with radius
     if radius_sq < 1e-3:
         somap[g, h, :] += learn_rate * (train_ex - somap[g, h, :])
         return somap

@@ -1,19 +1,21 @@
+import datetime
 import math
 from os.path import join
 from pathlib import Path
 
 import numpy as np
 from PIL import Image
+from project_util.artefact.artefact import Artefact
 from project_util.naming.naming import NamingUtil
-
-from som import SelfOrgMap, SingleSom
+from project_util.project.project import Project
+from som import SingleSom
 
 if __name__ == "__main__":
     # Dimensions of the som grid
-    img_width = math.ceil(1920 / 15)
-    img_height = math.ceil(1080 / 15)
+    img_width = math.ceil(1920 / 18)
+    img_height = math.ceil(1080 / 18)
     avg_dim = (img_width + img_height) / 2
-    input_path = "input-images/copenhagen.png"
+    input_path = "input-images/shibuya.png"
     epochs = 5
     print(
         f"{epochs} epochs based on {input_path}, @{img_width}x{img_height}px"
@@ -29,7 +31,7 @@ if __name__ == "__main__":
         # round(avg_dim / 1),
         round(avg_dim / 2),
         round(avg_dim / 4),
-        round(avg_dim / 20),
+        round(avg_dim / 8),
         # round(math.pow(avg_dim / 7, 2)),
         # round(math.pow(avg_dim / 3, 2)),
     ]
@@ -54,27 +56,24 @@ if __name__ == "__main__":
         width=img_width,
         train_data=train_data,  # same for multiple variations, so part of init
     )
+    proj_name = f"{NamingUtil.format_now()}-{NamingUtil.random_name()}"
+    parent_dir = Path(join(Path(__file__).parent.resolve(), "results"))
+    proj = Project(name=proj_name, parent_dir=parent_dir)
+    # todo: if you want to save individual epochs, you need to return per epoch,
+    #  or return a list of epochs
     for lr in learn_rates:
         for sigma in radius_sqs:
-            som_single.train(
-                step=3,
+            print(f"LR{lr} - R{sigma}")
+            result = som_single.train(
+                step=math.ceil(avg_dim),
                 epochs=epochs,
                 learn_rate=lr,
                 lr_decay=0.1,
                 radius_sq=sigma,
                 radius_decay=0.1,
             )
-
-    som = SelfOrgMap(
-        name=f"{NamingUtil.format_now()}-{NamingUtil.random_name()}",
-        parent_dir=join(Path(__file__).parent.resolve(), "results"),
-        height=img_height,
-        width=img_width,
-        input_path=input_path,
-        epochs=epochs,
-        learn_rates=learn_rates,
-        radius_sqs=radius_sqs,
-    )
-
-    result = som.train_all()
-    som.show_result(result)
+            artefact = Artefact(
+                f"img_LR{lr}-R{sigma}.png", project=proj, data=np.uint8(result)
+            )
+            artefact.save()
+            artefact.get_superres(9, new_project=proj.add_folder("x9")).save()

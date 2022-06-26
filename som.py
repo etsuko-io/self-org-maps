@@ -26,7 +26,7 @@ class SingleSom:
 
     def get_random_grid(self):
         rand = np.random.RandomState(0)
-        somap = rand.randint(0, 256, (self.width, self.height, 3))
+        somap = rand.randint(0, 256, (self.width, self.height, 3)).astype(float)
         return somap
 
     def train(
@@ -50,8 +50,21 @@ class SingleSom:
         :param step:
         :return:
         """
+        complexity = (
+            epochs
+            * self.width
+            * self.height
+            * len(self.train_data)
+        )
+
+        print(f"Complexity: {'{:,}'.format(complexity)}")
+
+        now = datetime.datetime.now()
+        print(f"time: {now}")
         somap = self.get_random_grid()
         rand = np.random.RandomState(0)
+        min_step = 3
+        print(f"orig step: {step}")
         for epoch in range(epochs):
             print(f" epoch {epoch}")
             rand.shuffle(self.train_data)
@@ -61,12 +74,10 @@ class SingleSom:
                     somap, train_ex, learn_rate, radius_sq, (g, h), step=step
                 )
             # Update learning rate and radius
-            learn_rate = self.decay_value(
-                learn_rate, lr_decay, epoch
-            )
-            radius_sq = self.decay_value(
-                radius_sq, radius_decay, epoch
-            )
+            learn_rate = self.decay_value(learn_rate, lr_decay, epoch)
+            radius_sq = self.decay_value(radius_sq, radius_decay, epoch)
+            step = round(self.decay_value(step, radius_decay, epoch))
+            print(f"updated step: {step}")
         return somap
 
     @staticmethod
@@ -158,18 +169,6 @@ class SelfOrgMap:
 
         return somap
 
-    def get_complexity(self):
-        complexity = (
-            self.epochs
-            * self.width
-            * self.height
-            * len(self.learn_rates)
-            * len(self.radius_sqs)
-            * len(self.train_data)
-        )
-
-        print(f"Complexity: {'{:,}'.format(complexity)}")
-        return complexity
 
     def train_all(self):
         now = datetime.datetime.now()
@@ -204,27 +203,6 @@ class SelfOrgMap:
             (datetime.datetime.now() - now).seconds / 60, 2
         )
         return result
-
-    def save_variation(self, somap, learn_rate, sigma):
-        artefact = Artefact(
-            name=f"img_[lr-{learn_rate}]_[sigma-{sigma}].png",
-            project=self.project,
-            data=np.uint8(somap),
-        )
-        artefact.save()
-        artefact_x3 = artefact.get_superres(
-            3,
-            new_name=NamingUtil.insert_suffix(artefact.name, "@x3"),
-            new_project=self.project.add_folder("x3"),
-        )
-        artefact_x9 = artefact_x3.get_superres(
-            3,
-            new_name=NamingUtil.insert_suffix(artefact.name, "@x9"),
-            new_project=self.project.add_folder("x9"),
-        )
-        artefact.save()
-        artefact_x3.save(self.project)
-        artefact_x9.save(self.project)
 
     def show_result(self, result):
         num_versions = len(self.learn_rates) * len(self.radius_sqs)
