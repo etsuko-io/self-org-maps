@@ -26,7 +26,9 @@ class SingleSom:
 
     def get_random_grid(self):
         rand = np.random.RandomState(0)
-        somap = rand.randint(0, 256, (self.width, self.height, 3)).astype(float)
+        somap = rand.randint(0, 256, (self.width, self.height, 3)).astype(
+            float
+        )
         return somap
 
     def train(
@@ -50,12 +52,7 @@ class SingleSom:
         :param step:
         :return:
         """
-        complexity = (
-            epochs
-            * self.width
-            * self.height
-            * len(self.train_data)
-        )
+        complexity = epochs * self.width * self.height * len(self.train_data)
 
         print(f"Complexity: {'{:,}'.format(complexity)}")
 
@@ -168,7 +165,6 @@ class SelfOrgMap:
             artefact_x9.save(res_x9_folder)
 
         return somap
-
 
     def train_all(self):
         now = datetime.datetime.now()
