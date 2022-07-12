@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 from project_util.artefact.artefact import Artefact
-from project_util.naming.naming import NamingUtil
 from project_util.project.project import Project
 
 import som_math
@@ -26,7 +25,7 @@ class SingleSom:
 
     def get_random_grid(self):
         rand = np.random.RandomState(0)
-        somap = rand.randint(0, 256, (self.width, self.height, 3)).astype(
+        somap = rand.randint(0, 256, (self.height, self.width, 3)).astype(
             float
         )
         return somap
