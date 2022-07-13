@@ -4,11 +4,11 @@ from pathlib import Path
 
 import numpy as np
 from PIL import Image
+from loguru import logger
 from project_util.artefact.artefact import Artefact
 from project_util.naming.naming import NamingUtil
 from project_util.project.project import Project
 
-from constants import BASE_HEIGHT, BASE_WIDTH
 from graphics import Graphics
 from models import SomArtBlueprint
 from som import SingleSom
@@ -21,6 +21,7 @@ class BlueprintProcessor:
     """
 
     def process(self, blueprint: SomArtBlueprint):
+        # todo: use this instead of requiring __init__
         pass
 
     # This is an "artistic" class, produces art output. Can you find something
@@ -60,12 +61,12 @@ class BlueprintProcessor:
             return np.array(im).reshape((-1, 3))
 
     def _log_plan(self):
-        print(
+        logger.info(
             f"{self.epochs} epochs based on {self.input_path}, "
             f"@{self.img_width}x{self.img_height}px"
         )
-        print(f"learn rates: {self.learn_rates}")
-        print(f"radius sqs: {self.radius_sqs}")
+        logger.info(f"learn rates: {self.learn_rates}")
+        logger.info(f"radius sqs: {self.radius_sqs}")
 
     def run(self):
         self._log_plan()
@@ -79,7 +80,7 @@ class BlueprintProcessor:
         #  or return a list of epochs
         for lr in self.learn_rates:
             for sigma in self.radius_sqs:
-                print(f"LR{lr} - R{sigma}")
+                logger.info(f"LR{lr} - R{sigma}")
                 result = som_single.train(
                     step=math.ceil(self.avg_dim / 2),
                     epochs=self.epochs,

@@ -2,13 +2,11 @@ import math
 
 from celery import Celery
 
+from blueprint_domain import BlueprintProcessor
 from constants import BASE_HEIGHT, BASE_WIDTH
-from main import Main
 from models import SomArtBlueprint
 
 
-# celery -A tasks worker --loglevel=INFO
-# RabbitMQ broker
 app = Celery("tasks", broker="pyamqp://guest@localhost//")
 
 
@@ -38,4 +36,4 @@ def create_soms():
         lr_decay=0.05,
         radius_decay=0.2,
     )
-    Main(bp).run()
+    BlueprintProcessor(bp).run()

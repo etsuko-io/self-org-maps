@@ -1,3 +1,5 @@
+from loguru import logger
+
 from tasks import create_soms
 
 
@@ -14,3 +16,4 @@ todos for structure:
 
 if __name__ == "__main__":
     create_soms.delay()
+    logger.info("Task created")
