@@ -1,10 +1,10 @@
 from pathlib import Path
 
 import cv2
-from PIL import Image
-from project_util.project.project import Project
 import numpy as np
 from loguru import logger
+from PIL import Image
+from project_util.project.project import Project
 
 
 class Graphics:
@@ -39,7 +39,7 @@ class Graphics:
                 im1 = last_image
             else:
                 im1 = Image.fromarray(frame)
-            im2 = Image.fromarray(frames[n+1])
+            im2 = Image.fromarray(frames[n + 1])
 
             for f in range(0, frames_per_blend):
                 blended = Image.blend(im1, im2, alpha=f / frames_per_blend)
