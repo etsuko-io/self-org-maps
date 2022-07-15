@@ -1,6 +1,7 @@
 import datetime
 
 import numpy as np
+from loguru import logger
 
 import som_math
 
@@ -46,16 +47,16 @@ class SingleSom:
         """
         complexity = epochs * self.width * self.height * len(self.train_data)
 
-        print(f"Complexity: {'{:,}'.format(complexity)}")
+        logger.info(f"Complexity: {'{:,}'.format(complexity)}")
 
         now = datetime.datetime.now()
         print(f"time: {now}")
         somap = self.get_random_grid()
         rand = np.random.RandomState(0)
         min_step = 3
-        print(f"orig step: {step}")
+        logger.info(f"orig step: {step}")
         for epoch in range(epochs):
-            print(f" epoch {epoch}")
+            logger.info(f" epoch {epoch}")
             rand.shuffle(self.train_data)
             for i, train_ex in enumerate(self.train_data):
                 g, h = som_math.find_bmu(somap, train_ex)
@@ -66,7 +67,7 @@ class SingleSom:
             learn_rate = self.decay_value(learn_rate, lr_decay, epoch)
             radius_sq = self.decay_value(radius_sq, radius_decay, epoch)
             step = round(self.decay_value(step, radius_decay, epoch))
-            print(f"updated step: {step}")
+            logger.info(f"updated step: {step}")
         return somap
 
     @staticmethod

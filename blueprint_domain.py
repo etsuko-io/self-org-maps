@@ -10,11 +10,21 @@ from project_util.naming.naming import NamingUtil
 from project_util.project.project import Project
 
 from graphics import Graphics
-from models import SomArtBlueprint
+from models import SomArtBlueprint, Blueprint
 from som import SingleSom
 
+from abc import ABC
 
-class BlueprintProcessor:
+
+class BlueprintProcessor(ABC):
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def process(self, blueprint: Blueprint):
+        raise NotImplementedError
+
+
+class SomBlueprintProcessor(BlueprintProcessor):
     """
     Take a blueprint and process it.
     Todo: make generic ABC, add to ProjectUtil

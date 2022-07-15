@@ -9,7 +9,11 @@ methods
 """
 
 
-class SomArtBlueprint(BaseModel):
+class Blueprint(BaseModel):
+    pass
+
+
+class SomArtBlueprint(Blueprint):
     input_path: str
     width: int
     height: int

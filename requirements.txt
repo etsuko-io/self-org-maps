@@ -7,3 +7,4 @@ git+https://github.com/etsuko-io/project-util.git@0.0.18
 celery==5.2.7
 pydantic
 loguru
+psutil

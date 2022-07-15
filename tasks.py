@@ -2,7 +2,7 @@ import math
 
 from celery import Celery
 
-from blueprint_domain import BlueprintProcessor
+from blueprint_domain import SomBlueprintProcessor
 from constants import BASE_HEIGHT, BASE_WIDTH
 from models import SomArtBlueprint
 
@@ -10,7 +10,6 @@ from models import SomArtBlueprint
 app = Celery("tasks", broker="pyamqp://guest@localhost//")
 
 
-@app.task
 def create_soms():
     w = math.ceil(BASE_WIDTH / 18)
     h = math.ceil(BASE_HEIGHT / 18)
@@ -36,4 +35,9 @@ def create_soms():
         lr_decay=0.05,
         radius_decay=0.2,
     )
-    BlueprintProcessor(bp).run()
+    SomBlueprintProcessor(bp).run()
+
+
+@app.task
+def create_soms_task():
+    create_soms()
