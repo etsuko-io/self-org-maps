@@ -3,6 +3,7 @@ from loguru import logger
 from tasks import create_soms
 from dotenv import load_dotenv
 
+
 """
 todos for structure: 
 [x] A single instance should actually just be a single map
@@ -16,8 +17,7 @@ todos for structure:
 
 
 if __name__ == "__main__":
-    load_dotenv("../.env")
-
+    load_dotenv()
     # Call Celery task
     create_soms()
     # create_soms_task.delay()
