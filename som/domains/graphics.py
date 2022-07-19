@@ -7,7 +7,7 @@ from PIL import Image
 from project_util.project.project import Project
 
 
-class Graphics:
+class GraphicsDomain:
     @staticmethod
     def create_blend_animation(
         input_proj: Project,

@@ -3,7 +3,7 @@ matplotlib
 black
 Pillow
 opencv-contrib-python==4.5.5.64
-git+https://github.com/etsuko-io/project-util.git@0.0.18
+git+https://github.com/etsuko-io/project-util.git@0.0.22
 celery==5.2.7
 pydantic
 loguru

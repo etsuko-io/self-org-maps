@@ -1,12 +1,10 @@
-import datetime
-
 import numpy as np
 from loguru import logger
 
-import som_math
+from som.domains.som import som_math
 
 
-class SingleSom:
+class SomDomain:
     def __init__(
         self,
         width,
@@ -49,12 +47,10 @@ class SingleSom:
 
         logger.info(f"Complexity: {'{:,}'.format(complexity)}")
 
-        now = datetime.datetime.now()
-        print(f"time: {now}")
         somap = self.get_random_grid()
         rand = np.random.RandomState(0)
         min_step = 3
-        logger.info(f"orig step: {step}")
+        logger.info(f"start with step size: {step}")
         for epoch in range(epochs):
             logger.info(f" epoch {epoch}")
             rand.shuffle(self.train_data)
@@ -67,6 +63,8 @@ class SingleSom:
             learn_rate = self.decay_value(learn_rate, lr_decay, epoch)
             radius_sq = self.decay_value(radius_sq, radius_decay, epoch)
             step = round(self.decay_value(step, radius_decay, epoch))
+            if step < min_step:
+                step = min_step
             logger.info(f"updated step: {step}")
         return somap
 

@@ -6,3 +6,4 @@ input-images
 .idea
 .python-version
 *.pyc
+.env

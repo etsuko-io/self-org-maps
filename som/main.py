@@ -1,7 +1,7 @@
 from loguru import logger
 
 from tasks import create_soms
-
+from dotenv import load_dotenv
 
 """
 todos for structure: 
@@ -16,6 +16,8 @@ todos for structure:
 
 
 if __name__ == "__main__":
+    load_dotenv("../.env")
+
     # Call Celery task
     create_soms()
     # create_soms_task.delay()
