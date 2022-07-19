@@ -1,20 +1,19 @@
 import math
 import os.path
+from abc import ABC
 from os.path import join
 from pathlib import Path
 
 import numpy as np
-from PIL import Image
 from loguru import logger
+from PIL import Image
 from project_util.artefact.artefact import Artefact
 from project_util.naming.naming import NamingUtil
 from project_util.project.project import Project
 
 from som.domains.graphics import GraphicsDomain
-from som.domains.models import SomArtBlueprint, Blueprint
+from som.domains.models import Blueprint, SomArtBlueprint
 from som.domains.som.som import SomDomain
-
-from abc import ABC
 
 
 class BlueprintProcessor(ABC):
@@ -58,6 +57,7 @@ class SomBlueprintProcessor(BlueprintProcessor):
         self.radius_decay = blueprint.radius_decay
         self.proj = self._init_project()
         self.train_data = self._load_train_data()
+        self.bucket = blueprint.bucket
         super().__init__()
 
     def _get_project_name(self):
@@ -109,12 +109,12 @@ class SomBlueprintProcessor(BlueprintProcessor):
                     data=np.uint8(result),
                 )
                 artefact.save()
-                artefact.save_to_s3(bucket="som")
+                artefact.save_to_s3(bucket=self.bucket)
                 artefact_superres = artefact.get_superres(
                     9, new_project=self.proj.add_folder("x9")
                 )
                 artefact_superres.save()
-                artefact_superres.save_to_s3(bucket="som")
+                artefact_superres.save_to_s3(bucket=self.bucket)
         GraphicsDomain.create_blend_animation(
             input_proj=self.proj.folders["x9"],
             output_proj=self.proj.folders["x9"].add_folder("animation"),

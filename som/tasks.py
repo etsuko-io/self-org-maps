@@ -2,8 +2,8 @@ import math
 
 from celery import Celery
 
-from som.domains.blueprint import SomBlueprintProcessor
 from som.constants import BASE_HEIGHT, BASE_WIDTH
+from som.domains.blueprint import SomBlueprintProcessor
 from som.domains.models import SomArtBlueprint
 
 
@@ -34,6 +34,7 @@ def create_soms():
         ],
         lr_decay=0.05,
         radius_decay=0.2,
+        bucket="etsuko-io-som"
     )
     SomBlueprintProcessor(bp).run()
 

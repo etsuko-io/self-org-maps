@@ -9,3 +9,6 @@ celery:
 
 style:
 	isort . && black .
+
+api:
+	uvicorn som.main:app --reload

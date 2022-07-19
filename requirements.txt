@@ -8,3 +8,6 @@ celery==5.2.7
 pydantic
 loguru
 psutil
+fastapi==0.79.0
+fastapi-utils==0.2.1
+uvicorn[standard]

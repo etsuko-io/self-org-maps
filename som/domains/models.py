@@ -22,3 +22,4 @@ class SomArtBlueprint(Blueprint):
     radius_sqs: List
     lr_decay: float
     radius_decay: float
+    bucket: str
