@@ -64,7 +64,7 @@ class SomBlueprintProcessor(BlueprintProcessor):
         return f"{NamingUtil.format_now()}-{self.input_file_name}"
 
     def _init_project(self) -> Project:
-        parent_dir = Path(join(Path(__file__).parent.resolve(), "results"))
+        parent_dir = Path(join(Path(__file__).parent.parent.parent.resolve(), "results"))
         return Project(name=self._get_project_name(), parent_dir=parent_dir)
 
     def _load_train_data(self):

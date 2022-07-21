@@ -54,15 +54,17 @@ class SomDomain:
         for epoch in range(epochs):
             logger.info(f" epoch {epoch}")
             rand.shuffle(self.train_data)
+            # Update learning rate and radius.
+            #  At epoch 0, values will stay identical.
+            learn_rate = self.decay_value(learn_rate, lr_decay, epoch)
+            radius_sq = self.decay_value(radius_sq, radius_decay, epoch)
+            step = round(self.decay_value(step, radius_decay, epoch))
+
             for i, train_ex in enumerate(self.train_data):
                 g, h = som_math.find_bmu(somap, train_ex)
                 somap = som_math.update_weights(
                     somap, train_ex, learn_rate, radius_sq, (g, h), step=step
                 )
-            # Update learning rate and radius
-            learn_rate = self.decay_value(learn_rate, lr_decay, epoch)
-            radius_sq = self.decay_value(radius_sq, radius_decay, epoch)
-            step = round(self.decay_value(step, radius_decay, epoch))
             if step < min_step:
                 step = min_step
             logger.info(f"updated step: {step}")

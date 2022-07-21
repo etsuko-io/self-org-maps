@@ -7,12 +7,12 @@ routes = [
         path="/som",
         endpoint=retrieve_som,
         methods=["GET"],
-        include_in_schema=True
+        include_in_schema=True,
     ),
     APIRoute(
         path="/som",
         endpoint=create_som,
         methods=["POST"],
-        include_in_schema=True
-    )
+        include_in_schema=True,
+    ),
 ]
