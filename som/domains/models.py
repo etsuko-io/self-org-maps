@@ -1,6 +1,6 @@
 from typing import List
 
-from pydantic import BaseModel
+from fastapi_utils.api_model import APIModel
 
 
 """
@@ -9,17 +9,20 @@ methods
 """
 
 
-class Blueprint(BaseModel):
+class Blueprint(APIModel):
     pass
 
 
 class SomArtBlueprint(Blueprint):
-    input_path: str
+    title: str
     width: int
     height: int
-    epochs: int
-    learn_rates: List
-    radius_sqs: List
-    lr_decay: float
-    radius_decay: float
     bucket: str
+    scale: float
+    image: str
+    # training params
+    epochs: int
+    learn_rates: List[float]
+    sigmas: List[float]
+    learning_rate_decay: float
+    sigma_decay: float

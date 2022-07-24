@@ -1,7 +1,7 @@
 from typing import List
 
-from transloadit import client
 from loguru import logger
+from transloadit import client
 
 
 def create_steps(images: List, fps: float, aws_creds: str):

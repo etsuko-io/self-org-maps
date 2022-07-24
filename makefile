@@ -9,6 +9,7 @@ celery:
 
 style:
 	isort . && black .
+	pre-commit run --all-files
 
 api-reload:
 	uvicorn som.main:app --reload

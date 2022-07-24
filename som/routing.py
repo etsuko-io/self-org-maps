@@ -1,6 +1,7 @@
 from fastapi.routing import APIRoute
 
-from som.views.som import retrieve_som, create_som
+from som.views.som import create_som, retrieve_som
+
 
 routes = [
     APIRoute(

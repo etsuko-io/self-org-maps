@@ -17,9 +17,7 @@ class SomDomain:
 
     def get_random_grid(self):
         rand = np.random.RandomState(0)
-        somap = rand.randint(0, 256, (self.height, self.width, 3)).astype(
-            float
-        )
+        somap = rand.randint(0, 256, (self.height, self.width, 3)).astype(float)
         return somap
 
     def train(
