@@ -71,7 +71,6 @@ class SomBlueprintProcessor(BlueprintProcessor):
     async def _load_train_data_from_bytes(file: UploadFile):
         contents = await file.read()
         im = Image.open(io.BytesIO(contents))
-        im.show()
         # reshape so it's a 1-dimensional array of color values
         return np.array(im).reshape((-1, 3))
 
@@ -97,9 +96,12 @@ class SomBlueprintProcessor(BlueprintProcessor):
         )
         logger.info(f"learn rates: {blueprint.learn_rates}")
         logger.info(f"radius sqs: {blueprint.sigmas}")
-        logger.info(f"dim: {blueprint.width} x {blueprint.height}")
+        logger.info(
+            f"dim: {blueprint.width} x {blueprint.height} "
+            f"@ scale {blueprint.scale}"
+        )
 
-    async def run(self, blueprint: SomArtBlueprint):
+    def run(self, blueprint: SomArtBlueprint):
         width = math.ceil(blueprint.width * blueprint.scale)
         height = math.ceil(blueprint.height * blueprint.scale)
         avg_dim = (width + height) / 2
@@ -128,7 +130,7 @@ class SomBlueprintProcessor(BlueprintProcessor):
                     epochs=blueprint.epochs,
                     learn_rate=lr,
                     lr_decay=blueprint.learning_rate_decay,
-                    radius_sq=sigma * avg_dim,
+                    radius_sq=round(sigma * avg_dim),
                     radius_decay=blueprint.sigma_decay,
                 )
                 artefact = Artefact(
@@ -147,5 +149,5 @@ class SomBlueprintProcessor(BlueprintProcessor):
             input_proj=proj.folders["x9"],
             output_proj=proj.folders["x9"].add_folder("animation"),
             name="animation",
-            frames_per_blend=96,
+            frames_per_blend=24,
         )

@@ -5,10 +5,15 @@ rabbitmq:
 	docker run -d -p 5672:5672 rabbitmq
 
 celery:
-	export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES && celery -A tasks worker --loglevel=INFO
+	export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES && celery -A som.tasks worker --loglevel=INFO
+
+celery-rabbitmq:
+	make rabbitmq
+	sleep 8
+	make celery
 
 style:
-	isort . && black .
+	isort som && black som
 	pre-commit run --all-files
 
 api-reload:

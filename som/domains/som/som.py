@@ -22,12 +22,12 @@ class SomDomain:
 
     def train(
         self,
-        step,
-        epochs,
-        learn_rate,
-        lr_decay,
-        radius_sq,
-        radius_decay,
+        step: int,
+        epochs: int,
+        learn_rate: float,
+        lr_decay: float,
+        radius_sq: int,
+        radius_decay: float,
     ):
         """
         Main routine for training an SOM. It requires an initialized SOM grid
