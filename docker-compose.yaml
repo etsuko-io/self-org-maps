@@ -1,12 +1,16 @@
-version: '2.0'
+version: '3.0'
 services:
   worker:
-    image: python:3.9-alpine
-    command: ash -c "apk add --no-cache build-base libcurl curl-dev; pip3 install -r requirements.txt; celery -A tasks worker --loglevel=info"
+    image: python:3.9-bullseye
+    command: >
+      bash -c "apt-get update -y;
+      apt-get install libgirepository1.0-dev ffmpeg libsm6 libxext6 -y;
+      pip3 install -r /project/requirements.txt;
+      cd /project;
+      export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES && celery -A som.tasks worker --loglevel=INFO --uid $$(id -u nobody);"
     volumes:
-      - "./som:/som"
-    working_dir: /som
-    restart: on-failure
+      - ./:/project
+    working_dir: /
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY

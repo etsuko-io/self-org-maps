@@ -1,0 +1,9 @@
+.python-version
+.flake8
+.env
+input-images
+results
+.gitignore
+.pre-commit-config.yaml
+docker-compose.yaml
+pyproject.toml

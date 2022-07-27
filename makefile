@@ -7,6 +7,9 @@ rabbitmq:
 celery:
 	export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES && celery -A som.tasks worker --loglevel=INFO
 
+celery-debian:
+	export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES && celery -A som.tasks worker --loglevel=INFO --uid $(id -u nobody);
+
 celery-rabbitmq:
 	make rabbitmq
 	sleep 8
