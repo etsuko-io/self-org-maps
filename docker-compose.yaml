@@ -4,10 +4,19 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: "celery-worker"
+    container_name: "som-celery-worker"
     environment:
       # Pass these env vars from shell to container
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
+      - CELERY_BROKER
+      - SQS_URL
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: make api
+    container_name: "som-api"
+    environment:
       - CELERY_BROKER
       - SQS_URL
