@@ -16,7 +16,8 @@ def verify_env():
     ):
         logger.error("$AWS_ACCESS_KEY_ID and $AWS_SECRET_ACCESS_KEY not found")
         logger.info(f"CWD: {os.getcwd()}")
-        failed = True
+        # failed = True > don't fail just yet,
+        # on prod not required because EC2 instance profile
     if not os.environ.get("CELERY_BROKER"):
         logger.error("$CELERY_BROKER not found")
         failed = True
