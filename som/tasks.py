@@ -9,16 +9,25 @@ from som.domains.models import SomArtBlueprint
 from som.domains.processor import SomBlueprintProcessor
 
 
-def create_celery():
-    logger.info("Loading .env...")
-    load_dotenv()
+def verify_env():
+    failed = False
     if not os.environ.get("AWS_ACCESS_KEY_ID") or not os.environ.get(
         "AWS_SECRET_ACCESS_KEY"
     ):
         logger.error("$AWS_ACCESS_KEY_ID and $AWS_SECRET_ACCESS_KEY not found")
         logger.info(f"CWD: {os.getcwd()}")
+        failed = True
     if not os.environ.get("CELERY_BROKER"):
         logger.error("$CELERY_BROKER not found")
+        failed = True
+    if failed:
+        raise RuntimeError("ENV vars are incomplete")
+
+
+def create_celery():
+    logger.info("Loading .env...")
+    load_dotenv()
+    verify_env()
     return Celery("tasks", broker=os.environ.get("CELERY_BROKER"))
 
 
