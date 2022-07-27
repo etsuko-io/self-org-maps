@@ -5,5 +5,7 @@ from som.routing import routes
 
 
 def create_app():
+    # Load a .env file, primarily for local usage.
+    # there's no harm if the file is not present.
     load_dotenv()
     return FastAPI(routes=routes)

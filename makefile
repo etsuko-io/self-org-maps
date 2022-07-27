@@ -24,3 +24,6 @@ api-reload:
 
 api:
 	uvicorn som.main:app
+
+build:
+	docker compose build

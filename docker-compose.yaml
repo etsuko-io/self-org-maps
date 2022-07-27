@@ -1,18 +1,13 @@
 version: '3.0'
 services:
   worker:
-    image: python:3.9-bullseye
-    command: >
-      bash -c "apt-get update -y;
-      apt-get install libgirepository1.0-dev ffmpeg libsm6 libxext6 -y;
-      pip3 install -r /project/requirements.txt;
-      cd /project;
-      export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES && celery -A som.tasks worker --loglevel=INFO --uid $$(id -u nobody);"
-    volumes:
-      - ./:/project
-    working_dir: /
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: "celery-worker"
     environment:
+      # Pass these env vars from shell to container
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
-      - AWS_REGION
+      - CELERY_BROKER
       - SQS_URL
