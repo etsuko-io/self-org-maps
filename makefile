@@ -20,10 +20,10 @@ style:
 	pre-commit run --all-files
 
 api-reload:
-	uvicorn som.main:app --reload
+	uvicorn som.main:fastapi --reload
 
 api:
-	uvicorn som.main:app --host 0.0.0.0 --port 8000
+	uvicorn som.main:fastapi --host 0.0.0.0 --port 8000
 
 build:
 	docker compose build
