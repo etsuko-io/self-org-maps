@@ -23,7 +23,7 @@ api-reload:
 	uvicorn som.main:app --reload
 
 api:
-	uvicorn som.main:app
+	uvicorn som.main:app --host 0.0.0.0 --port 8000
 
 build:
 	docker compose build

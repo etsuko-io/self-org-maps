@@ -6,4 +6,5 @@ COPY ./ ./
 RUN pip3 install -r /project/requirements.txt
 RUN pwd
 RUN ls
+EXPOSE 8000
 CMD ["make", "celery"]

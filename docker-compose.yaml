@@ -10,7 +10,6 @@ services:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
       - CELERY_BROKER
-      - SQS_URL
   api:
     build:
       context: .
@@ -19,4 +18,5 @@ services:
     container_name: "som-api"
     environment:
       - CELERY_BROKER
-      - SQS_URL
+    ports:
+      - "127.0.0.1:8000:8000"

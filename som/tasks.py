@@ -29,6 +29,13 @@ def create_celery():
     logger.info("Loading .env...")
     load_dotenv()
     verify_env()
+    """
+    URL format for SQS broker: sqs://aws_access_key_id:aws_secret_access_key@
+
+    If you are using IAM roles on instances, you can set the BROKER_URL to:
+    sqs://
+    and kombu will attempt to retrieve access tokens from the instance metadata.
+    """
     return Celery("tasks", broker=os.environ.get("CELERY_BROKER"))
 
 
