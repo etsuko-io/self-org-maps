@@ -7,16 +7,16 @@ from os.path import join
 from pathlib import Path
 
 import numpy as np
-from fastapi import HTTPException, UploadFile
+from fastapi import UploadFile
 from loguru import logger
 from PIL import Image
 from project_util.artefact.artefact import Artefact
 from project_util.naming.naming import NamingUtil
 from project_util.project.project import Project
 
-from som.domains.graphics import GraphicsDomain
-from som.domains.models import Blueprint, SomArtBlueprint
-from som.domains.som.som import SomDomain
+from som.common.models import Blueprint, SomArtBlueprint
+from som.worker.domains.graphics import GraphicsDomain
+from som.worker.domains.som.som import SomDomain
 
 
 class BlueprintProcessor(ABC):
@@ -84,13 +84,12 @@ class SomBlueprintProcessor(BlueprintProcessor):
             im.show()
         except Exception as e:
             logger.error(f"Error loading image base64: {e}")
-            raise HTTPException(
-                status_code=400, detail="Error loading base64 image"
-            )
+            raise ValueError("Error loading base64 image")
 
         return np.array(im).reshape((-1, 3))
 
-    def _log_plan(self, blueprint: SomArtBlueprint):
+    @staticmethod
+    def _log_plan(blueprint: SomArtBlueprint):
         logger.info(
             f"{blueprint.epochs} epochs based on {blueprint.title}, "
             f"@{blueprint.width}x{blueprint.height}px"

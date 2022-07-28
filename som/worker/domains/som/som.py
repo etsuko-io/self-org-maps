@@ -1,7 +1,7 @@
 import numpy as np
 from loguru import logger
 
-from som.domains.som import som_math
+from som.worker.domains.som import som_math
 
 
 class SomDomain:

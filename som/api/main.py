@@ -1,4 +1,4 @@
-from som.fastapi import create_app
+from som.api.fastapi import create_app
 
 
 """

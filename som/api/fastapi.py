@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 from fastapi import FastAPI
 
-from som.routing import routes
+from som.api.routing import routes
 
 
 def create_app():

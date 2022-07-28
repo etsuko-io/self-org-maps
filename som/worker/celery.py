@@ -5,8 +5,8 @@ from celery import Celery
 from dotenv import load_dotenv
 from loguru import logger
 
-from som.domains.models import SomArtBlueprint
-from som.domains.processor import SomBlueprintProcessor
+from som.common.models import SomArtBlueprint
+from som.worker.domains.processor import SomBlueprintProcessor
 
 
 def verify_env():
