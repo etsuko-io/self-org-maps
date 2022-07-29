@@ -7,3 +7,4 @@ input-images
 .python-version
 *.pyc
 .env
+.env.*

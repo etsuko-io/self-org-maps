@@ -45,4 +45,4 @@ celery = create_celery()
 @celery.task
 def create_soms_task(blueprint: Dict):
     blueprint_obj = SomArtBlueprint(**blueprint)
-    SomBlueprintProcessor().run(blueprint_obj)
+    SomBlueprintProcessor().process(blueprint_obj)

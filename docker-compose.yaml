@@ -5,21 +5,15 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: "som-celery-worker"
-    environment:
-      # Pass these env vars from shell to container
-      - AWS_ACCESS_KEY_ID
-      - AWS_SECRET_ACCESS_KEY
-      - CELERY_BROKER
-      - GUI=false
-      - SAVE_LOCAL=false
-      - ENABLE_ANIMATION=false
+    env_file:
+      - .env.docker.local
   api:
     build:
       context: .
       dockerfile: Dockerfile
     command: make api
     container_name: "som-api"
-    environment:
-      - CELERY_BROKER
+    env_file:
+      - .env.docker.local
     ports:
-      - "127.0.0.1:8000:8000"
+      - "127.0.0.1:8000:${PORT-8000}"  # take env var PORT, use 8000 as default

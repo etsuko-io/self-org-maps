@@ -1,6 +1,7 @@
 from typing import List
 
 from fastapi_utils.api_model import APIModel
+from project_util.blueprint.blueprint import Blueprint
 
 
 """
@@ -9,11 +10,11 @@ methods
 """
 
 
-class Blueprint(APIModel):
+class ApiBlueprint(APIModel, Blueprint):
     pass
 
 
-class SomArtBlueprint(Blueprint):
+class SomArtBlueprint(ApiBlueprint):
     title: str
     width: int
     height: int

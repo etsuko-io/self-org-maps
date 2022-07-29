@@ -5,10 +5,10 @@ rabbitmq:
 	docker run -d -p 5672:5672 rabbitmq
 
 celery:
-	export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES && celery -A som.tasks worker --loglevel=INFO --pool=prefork --concurrency=4
+	export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES && celery -A som.worker.celery worker --loglevel=INFO --pool=prefork --concurrency=4
 
 celery-debian:
-	export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES && celery -A som.tasks worker --loglevel=INFO --uid $(id -u nobody)  --pool=prefork --concurrency=2
+	celery -A som.worker.celery worker --loglevel=INFO --uid $(shell id -u nobody)  --pool=prefork --concurrency=2
 
 celery-rabbitmq:
 	make rabbitmq
@@ -20,10 +20,10 @@ style:
 	pre-commit run --all-files
 
 api-reload:
-	uvicorn som.main:fastapi --reload
+	uvicorn som.api.main:app --reload
 
 api:
-	uvicorn som.main:fastapi --host 0.0.0.0 --port 8000
+	uvicorn som.api.main:app --host 0.0.0.0 --port 8000
 
 build:
 	docker compose build

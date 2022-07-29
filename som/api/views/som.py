@@ -3,6 +3,7 @@ from fastapi import HTTPException
 from fastapi_utils.api_model import APIMessage
 from loguru import logger
 
+from som.api.views.models import SomMessage
 from som.common.models import SomArtBlueprint
 from som.worker.celery import create_soms_task
 
@@ -18,4 +19,4 @@ async def create_som(blueprint: SomArtBlueprint):
         logger.error("Can't connect to celery")
         raise HTTPException(status_code=500, detail="Failed to create task")
 
-    return APIMessage(task_id=task_id)
+    return SomMessage(task_id=str(task_id))

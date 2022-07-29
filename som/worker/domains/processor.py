@@ -2,7 +2,6 @@ import base64
 import io
 import math
 import os
-from abc import ABC
 from os.path import join
 from pathlib import Path
 
@@ -11,31 +10,20 @@ from fastapi import UploadFile
 from loguru import logger
 from PIL import Image
 from project_util.artefact.artefact import Artefact
+from project_util.blueprint.blueprint import BlueprintProcessor
 from project_util.naming.naming import NamingUtil
 from project_util.project.project import Project
 
-from som.common.models import Blueprint, SomArtBlueprint
+from som.common.models import SomArtBlueprint
+from som.worker.config.settings import WorkerSettings
 from som.worker.domains.graphics import GraphicsDomain
 from som.worker.domains.som.som import SomDomain
-
-
-class BlueprintProcessor(ABC):
-    def __init__(self, *args, **kwargs):
-        pass
-
-    def process(self, blueprint: Blueprint):
-        raise NotImplementedError
 
 
 class SomBlueprintProcessor(BlueprintProcessor):
     """
     Take a blueprint and process it.
-    Todo: make generic ABC, add to ProjectUtil
     """
-
-    def process(self, blueprint: SomArtBlueprint):
-        # todo: use this instead of requiring __init__
-        pass
 
     # This is an "artistic" class, produces art output. Can you find something
     # common with other of such classes, to unionize in a superclass/abc?
@@ -47,6 +35,7 @@ class SomBlueprintProcessor(BlueprintProcessor):
     # - optional instance of NamingUtil
 
     def __init__(self):
+        self.worker_settings: WorkerSettings = WorkerSettings()
         super().__init__()
 
     @staticmethod
@@ -75,13 +64,13 @@ class SomBlueprintProcessor(BlueprintProcessor):
         # reshape so it's a 1-dimensional array of color values
         return np.array(im).reshape((-1, 3))
 
-    @staticmethod
-    def _load_train_data_from_base64(base64_str: str):
+    def _load_train_data_from_base64(self, base64_str: str):
         try:
             im = Image.open(
                 io.BytesIO(base64.decodebytes(bytes(base64_str, "utf-8")))
             )
-            im.show()
+            if self.worker_settings.has_gui:
+                im.show()
         except Exception as e:
             logger.error(f"Error loading image base64: {e}")
             raise ValueError("Error loading base64 image")
@@ -101,7 +90,7 @@ class SomBlueprintProcessor(BlueprintProcessor):
             f"@ scale {blueprint.scale}"
         )
 
-    def run(self, blueprint: SomArtBlueprint):
+    def process(self, blueprint: SomArtBlueprint):
         width = math.ceil(blueprint.width * blueprint.scale)
         height = math.ceil(blueprint.height * blueprint.scale)
         avg_dim = (width + height) / 2
