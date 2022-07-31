@@ -26,6 +26,7 @@ def verify_env():
 
 
 def create_celery():
+    logger.info("Creating Celery")
     logger.info("Loading .env...")
     load_dotenv()
     verify_env()

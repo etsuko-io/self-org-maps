@@ -11,6 +11,7 @@ from loguru import logger
 from PIL import Image
 from project_util.artefact.artefact import Artefact
 from project_util.blueprint.blueprint import BlueprintProcessor
+from project_util.constants import S3
 from project_util.naming.naming import NamingUtil
 from project_util.project.project import Project
 
@@ -36,6 +37,7 @@ class SomBlueprintProcessor(BlueprintProcessor):
 
     def __init__(self):
         self.worker_settings: WorkerSettings = WorkerSettings()
+        logger.info(f"Loaded worker settings: {self.worker_settings.dict()}")
         super().__init__()
 
     @staticmethod
@@ -46,8 +48,12 @@ class SomBlueprintProcessor(BlueprintProcessor):
         parent_dir = Path(
             join(Path(__file__).parent.parent.parent.resolve(), "results")
         )
+
+        # Doesn't work / make sense for a Docker container to make local folders
         return Project(
-            name=self._get_project_name(blueprint), parent_dir=parent_dir
+            name=self._get_project_name(blueprint),
+            parent_dir=parent_dir,
+            backend=S3,
         )
 
     @staticmethod

@@ -27,3 +27,9 @@ api:
 
 build:
 	docker compose build
+
+docker-build-local:
+	ENV_FILE=.env.docker.local docker compose up --build
+
+docker-build-prod:
+	ENV_FILE=.env.docker.prod docker compose up --build

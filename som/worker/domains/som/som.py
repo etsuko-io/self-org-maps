@@ -1,5 +1,6 @@
 import numpy as np
 from loguru import logger
+from PIL import Image
 
 from som.worker.domains.som import som_math
 
@@ -46,6 +47,8 @@ class SomDomain:
         logger.info(f"Complexity: {'{:,}'.format(complexity)}")
 
         somap = self.get_random_grid()
+        entropy = Image.fromarray(np.uint8(somap)).entropy()
+        logger.info(f"Starting entropy: {entropy}")
         rand = np.random.RandomState(0)
         min_step = 3
         logger.info(f"start with step size: {step}")

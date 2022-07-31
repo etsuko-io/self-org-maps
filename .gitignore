@@ -7,4 +7,4 @@ input-images
 .python-version
 *.pyc
 .env
-.env.*
+.env.docker.local
