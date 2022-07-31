@@ -37,6 +37,7 @@ def create_celery():
     sqs://
     and kombu will attempt to retrieve access tokens from the instance metadata.
     """
+
     return Celery("tasks", broker=os.environ.get("CELERY_BROKER"))
 
 

@@ -5,6 +5,8 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: "som-celery-worker"
+    volumes:
+      - "./:/project"
     env_file:
       - $ENV_FILE
   api:
@@ -13,6 +15,8 @@ services:
       dockerfile: Dockerfile
     command: make api
     container_name: "som-api"
+    volumes:
+      - "./:/project"
     env_file:
       - $ENV_FILE
     ports:

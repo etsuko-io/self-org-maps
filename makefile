@@ -2,7 +2,7 @@ install:
 	pip install -r requirements.txt
 
 rabbitmq:
-	docker run -d -p 5672:5672 rabbitmq
+	docker run -d -p 5672:5672 --name "rabbitmq" rabbitmq
 
 celery:
 	export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES && celery -A som.worker.celery worker --loglevel=INFO --pool=prefork --concurrency=4
@@ -31,5 +31,11 @@ build:
 docker-build-local:
 	ENV_FILE=.env.docker.local docker compose up --build
 
+docker-start-local:
+	ENV_FILE=.env.docker.local docker compose up
+
+docker-stop:
+	docker compose down
+
 docker-build-prod:
-	ENV_FILE=.env.docker.prod docker compose up --build
+	PORT=80 ENV_FILE=.env.docker.prod docker compose up --build

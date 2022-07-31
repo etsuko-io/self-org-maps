@@ -8,5 +8,5 @@ class WorkerSettings(BaseSettings):
     aws_secret_access_key: Optional[str]
     celery_broker: str
     enable_animation: bool
-    save_local: bool
+    storage_backend: str
     has_gui: bool
