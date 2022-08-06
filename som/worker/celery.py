@@ -2,7 +2,6 @@ import os
 from typing import Dict
 
 from celery import Celery
-from dotenv import load_dotenv
 from loguru import logger
 
 from som.common.models import SomArtBlueprint
@@ -27,8 +26,6 @@ def verify_env():
 
 def create_celery():
     logger.info("Creating Celery")
-    logger.info("Loading .env...")
-    load_dotenv()
     verify_env()
     """
     URL format for SQS broker: sqs://aws_access_key_id:aws_secret_access_key@

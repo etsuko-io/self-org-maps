@@ -31,11 +31,11 @@ build:
 docker-build-local:
 	ENV_FILE=.env.docker.local docker compose up --build
 
-docker-start-local:
+docker-up-local:
 	ENV_FILE=.env.docker.local docker compose up
 
-docker-stop:
-	docker compose down
+docker-down:
+	ENV_FILE=.env.docker.local docker compose down
 
 docker-build-prod:
-	PORT=80 ENV_FILE=.env.docker.prod docker compose up --build
+	ENV_FILE=.env.docker.prod docker compose up --build

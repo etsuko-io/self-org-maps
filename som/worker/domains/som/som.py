@@ -1,7 +1,9 @@
 import numpy as np
 from loguru import logger
+from numpy import ndarray
 from PIL import Image
 
+from som.tooling.entropy import grayscale_4bit
 from som.worker.domains.som import som_math
 
 
@@ -47,8 +49,7 @@ class SomDomain:
         logger.info(f"Complexity: {'{:,}'.format(complexity)}")
 
         somap = self.get_random_grid()
-        entropy = Image.fromarray(np.uint8(somap)).entropy()
-        logger.info(f"Starting entropy: {entropy}")
+        logger.info(f"Starting entropy: {self.get_entropy(somap)}")
         rand = np.random.RandomState(0)
         min_step = 3
         logger.info(f"start with step size: {step}")
@@ -68,8 +69,14 @@ class SomDomain:
                 )
             if step < min_step:
                 step = min_step
+            logger.info(f"Epoch {epoch} entropy: {self.get_entropy(somap)}")
             logger.info(f"updated step: {step}")
+        logger.info(f"Final entropy: {self.get_entropy(somap)}")
         return somap
+
+    @staticmethod
+    def get_entropy(image: ndarray):
+        return grayscale_4bit(Image.fromarray(np.uint8(image))).entropy()
 
     @staticmethod
     def decay_value(val, decay, epoch) -> float:

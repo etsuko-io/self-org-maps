@@ -1,7 +1,6 @@
 import base64
 import io
 import math
-import os
 from os.path import join
 from pathlib import Path
 
@@ -133,15 +132,20 @@ class SomBlueprintProcessor(BlueprintProcessor):
                     project=proj,
                     data=np.uint8(result),
                 )
-                artefact.save()
-                artefact.save_to_s3(bucket=blueprint.bucket)
+                proj.save_image(
+                    artefact.data,
+                    file_name=Path(artefact.name),
+                    bucket=blueprint.bucket,
+                )
                 artefact_superres = artefact.get_superres(
                     9, new_project=proj.add_folder("x9")
                 )
-                if os.environ.get("ENABLE_ANIMATION"):
-                    artefact_superres.save()
-                artefact_superres.save_to_s3(bucket=blueprint.bucket)
-        if os.environ.get("ENABLE_ANIMATION"):
+                proj.save_image(
+                    artefact_superres.data,
+                    file_name=Path(artefact_superres.name),
+                    bucket=blueprint.bucket,
+                )
+        if self.worker_settings.enable_animation:
             GraphicsDomain.create_blend_animation(
                 input_proj=proj.folders["x9"],
                 output_proj=proj.folders["x9"].add_folder("animation"),
