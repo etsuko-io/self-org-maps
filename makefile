@@ -37,5 +37,12 @@ docker-up-local:
 docker-down:
 	ENV_FILE=.env.docker.local docker compose down
 
+
+deploy-image:
+	# todo: implement
+	docker build .
+
+
+
 docker-build-prod:
-	ENV_FILE=.env.docker.prod docker compose up --build
+	ENV_FILE=.env.docker.prod docker-compose up --build
