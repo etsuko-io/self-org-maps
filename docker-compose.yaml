@@ -9,6 +9,8 @@ services:
       - "./:/project"
     env_file:
       - $ENV_FILE
+    environment:
+      - CELERY_BROKER
   api:
     build:
       context: .
@@ -21,3 +23,5 @@ services:
       - $ENV_FILE
     ports:
       - "127.0.0.1:8000:${APP_PORT-8000}"  # take env var APP_PORT, use 8000 as default
+    environment:
+      - CELERY_BROKER

@@ -42,7 +42,5 @@ deploy-image:
 	# todo: implement
 	docker build .
 
-
-
 docker-build-prod:
 	ENV_FILE=.env.docker.prod docker-compose up --build
