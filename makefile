@@ -32,15 +32,14 @@ docker-build-local:
 	ENV_FILE=.env.docker.local docker compose up --build
 
 docker-up-local:
-	ENV_FILE=.env.docker.local docker compose up
+	APP_PORT=8000 ENV_FILE=.env.docker.local docker compose up
 
 docker-down:
 	ENV_FILE=.env.docker.local docker compose down
 
+docker-build-prod:
+	APP_PORT=80 ENV_FILE=.env.docker.prod docker-compose up --build
 
 deploy-image:
 	# todo: implement
 	docker build .
-
-docker-build-prod:
-	ENV_FILE=.env.docker.prod docker-compose up --build
