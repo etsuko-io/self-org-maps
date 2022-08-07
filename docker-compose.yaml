@@ -22,6 +22,6 @@ services:
     env_file:
       - $ENV_FILE
     ports:
-      - "127.0.0.1:${APP_PORT-8000}:8000"  # take env var APP_PORT, use 8000 as default
+      - "${APP_PORT-8000}:8000"  # take env var APP_PORT, use 8000 as default
     environment:
       - CELERY_BROKER
