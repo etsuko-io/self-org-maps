@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi_utils.api_model import APIModel
 from project_util.blueprint.blueprint import Blueprint
 
@@ -24,7 +22,7 @@ class SomArtBlueprint(ApiBlueprint):
     image: str
     # training params
     epochs: int
-    learn_rates: List[float]
-    sigmas: List[float]
+    learn_rate: float
+    sigma: float
     learning_rate_decay: float
     sigma_decay: float

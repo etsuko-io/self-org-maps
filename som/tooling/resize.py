@@ -32,9 +32,7 @@ if __name__ == "__main__":
         """
 
         scale = sqrt(current_length / training_length)
-        resized = img.resize(
-            size=(ceil(img.width / scale), ceil(img.height / scale))
-        )
+        resized = img.resize(size=(ceil(img.width / scale), ceil(img.height / scale)))
         resized.show()
         img_byte_arr = io.BytesIO()
         resized.save(img_byte_arr, format="PNG")

@@ -11,9 +11,7 @@ def entropy(signal: ndarray):
     Function returns entropy of a signal. Signal must be a 1-D numpy array.
     """
     symset = list(set(signal))
-    propab = [
-        np.size(signal[signal == i]) / (1.0 * signal.size) for i in symset
-    ]
+    propab = [np.size(signal[signal == i]) / (1.0 * signal.size) for i in symset]
     return np.sum([p * np.log2(1.0 / p) for p in propab])
 
 

@@ -66,9 +66,7 @@ class SomBlueprintProcessor(BlueprintProcessor):
 
     def _load_train_data_from_base64(self, base64_str: str):
         try:
-            im = Image.open(
-                io.BytesIO(base64.decodebytes(bytes(base64_str, "utf-8")))
-            )
+            im = Image.open(io.BytesIO(base64.decodebytes(bytes(base64_str, "utf-8"))))
             if self.worker_settings.has_gui:
                 im.show()
         except Exception as e:
@@ -83,11 +81,10 @@ class SomBlueprintProcessor(BlueprintProcessor):
             f"{blueprint.epochs} epochs based on {blueprint.title}, "
             f"@{blueprint.width}x{blueprint.height}px"
         )
-        logger.info(f"learn rates: {blueprint.learn_rates}")
-        logger.info(f"radius sqs: {blueprint.sigmas}")
+        logger.info(f"learn rate: {blueprint.learn_rate}")
+        logger.info(f"radius sq: {blueprint.sigma}")
         logger.info(
-            f"dim: {blueprint.width} x {blueprint.height} "
-            f"@ scale {blueprint.scale}"
+            f"dim: {blueprint.width} x {blueprint.height} " f"@ scale {blueprint.scale}"
         )
 
     def process(self, blueprint: SomArtBlueprint):
@@ -111,35 +108,31 @@ class SomBlueprintProcessor(BlueprintProcessor):
 
         # todo: if you want to save individual epochs, you need to return
         # per epoch, or return a list of epochs
-        for lr in blueprint.learn_rates:
-            for sigma in blueprint.sigmas:
-                logger.info(f"LR{lr} - R{sigma}")
-                result = som_single.train(
-                    step=math.ceil(avg_dim / 2),
-                    epochs=blueprint.epochs,
-                    learn_rate=lr,
-                    lr_decay=blueprint.learning_rate_decay,
-                    radius_sq=round(sigma * avg_dim),
-                    radius_decay=blueprint.sigma_decay,
-                )
-                artefact = Artefact(
-                    f"img_LR{lr}-R{sigma}-{blueprint.title}.tiff",
-                    project=proj,
-                    data=np.uint8(result),
-                )
-                proj.save_image(
-                    artefact.data,
-                    file_name=Path(artefact.name),
-                    bucket=blueprint.bucket,
-                )
-                artefact_superres = artefact.get_superres(
-                    9, new_project=proj.add_folder("x9")
-                )
-                proj.save_image(
-                    artefact_superres.data,
-                    file_name=Path(artefact_superres.name),
-                    bucket=blueprint.bucket,
-                )
+        logger.info(f"LR{blueprint.learn_rate} - R{blueprint.sigma}")
+        result = som_single.train(
+            step=math.ceil(avg_dim / 2),
+            epochs=blueprint.epochs,
+            learn_rate=blueprint.learn_rate,
+            lr_decay=blueprint.learning_rate_decay,
+            radius_sq=round(blueprint.sigma * avg_dim),
+            radius_decay=blueprint.sigma_decay,
+        )
+        artefact = Artefact(
+            f"img_LR{blueprint.learn_rate}-R{blueprint.sigma}-{blueprint.title}.tiff",
+            project=proj,
+            data=np.uint8(result),
+        )
+        proj.save_image(
+            artefact.data,
+            file_name=Path(artefact.name),
+            bucket=blueprint.bucket,
+        )
+        artefact_superres = artefact.get_superres(9, new_project=proj.add_folder("x9"))
+        proj.save_image(
+            artefact_superres.data,
+            file_name=Path(artefact_superres.name),
+            bucket=blueprint.bucket,
+        )
         if self.worker_settings.enable_animation:
             GraphicsDomain.create_blend_animation(
                 input_proj=proj.folders["x9"],

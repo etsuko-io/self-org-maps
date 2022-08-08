@@ -44,9 +44,7 @@ class GraphicsDomain:
             for f in range(0, frames_per_blend):
                 blended = Image.blend(im1, im2, alpha=f / frames_per_blend)
                 as_bgr = cv2.cvtColor(np.array(blended), cv2.COLOR_RGB2BGR)
-                tmp_folder.save_image(
-                    as_bgr, Path(f"im{currrent_frame:08d}.tiff")
-                )
+                tmp_folder.save_image(as_bgr, Path(f"im{currrent_frame:08d}.tiff"))
                 currrent_frame += 1
         # todo: delete image files?
         logger.info(f"exporting from {tmp_folder.path} to {output_proj.path}")
