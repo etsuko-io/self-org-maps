@@ -25,8 +25,11 @@ api-reload:
 api:
 	uvicorn som.api.main:app --host 0.0.0.0 --port 8000
 
+build-tag:
+	docker build -t self-organizing-map
+
 build:
-	docker compose build
+	ENV_FILE=.env.docker.local docker compose build
 
 docker-build-local:
 	ENV_FILE=.env.docker.local docker compose up --build
@@ -43,3 +46,8 @@ docker-build-prod:
 deploy-image:
 	# todo: implement
 	docker build .
+
+login-registry:
+	# todo: fix, invalid credential error
+	aws ecr get-login-password --region eu-west-1 \
+	| docker login --username AWS --password-stdin 544503054130.dkr.ecr.eu-west-1.amazonaws.com

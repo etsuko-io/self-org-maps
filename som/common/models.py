@@ -19,6 +19,7 @@ class SomArtBlueprint(ApiBlueprint):
     width: int
     height: int
     bucket: str
+    path: str
     scale: float
     image: str
     # training params

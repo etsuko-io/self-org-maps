@@ -1,7 +1,6 @@
 import base64
 import io
 import math
-from os.path import join
 from pathlib import Path
 
 import numpy as np
@@ -44,14 +43,10 @@ class SomBlueprintProcessor(BlueprintProcessor):
         return f"{NamingUtil.format_now()}-{blueprint.title}"
 
     def _init_project(self, blueprint: SomArtBlueprint) -> Project:
-        parent_dir = Path(
-            join(Path(__file__).parent.parent.parent.resolve(), "results")
-        )
-
         # Doesn't work / make sense for a Docker container to make local folders
         return Project(
             name=self._get_project_name(blueprint),
-            parent_dir=parent_dir,
+            parent_dir=Path(blueprint.path),
             backend=S3,
         )
 
