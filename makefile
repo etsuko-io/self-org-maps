@@ -1,5 +1,5 @@
 install:
-	pip install -r requirements.txt
+	pip install -r requirements.txt --upgrade pip
 
 rabbitmq:
 	docker run -d -p 5672:5672 --name "rabbitmq" rabbitmq

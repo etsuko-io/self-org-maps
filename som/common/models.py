@@ -1,3 +1,5 @@
+import json
+
 from fastapi_utils.api_model import APIModel
 from project_util.blueprint.blueprint import Blueprint
 
@@ -9,7 +11,8 @@ methods
 
 
 class ApiBlueprint(APIModel, Blueprint):
-    pass
+    def export(self) -> str:
+        return json.dumps(self.dict(), indent=4)
 
 
 class SomArtBlueprint(ApiBlueprint):
@@ -17,7 +20,7 @@ class SomArtBlueprint(ApiBlueprint):
     width: int
     height: int
     bucket: str
-    path: str
+    path: str  # path within bucket
     scale: float
     image: str
     # training params

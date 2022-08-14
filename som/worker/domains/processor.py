@@ -39,7 +39,7 @@ class SomBlueprintProcessor(BlueprintProcessor):
         super().__init__()
 
     @staticmethod
-    def _get_project_name(blueprint):
+    def _get_project_name(blueprint: SomArtBlueprint):
         return f"{NamingUtil.format_now()}-{blueprint.title}"
 
     def _init_project(self, blueprint: SomArtBlueprint) -> Project:
