@@ -31,20 +31,18 @@ def img_to_b64(img: Image) -> str:
 
 def make_request_body(name, b64_img):
     bp = SomArtBlueprint(
-        **{
-            "width": 1920,
-            "height": 1080,
-            "scale": 0.3,
-            "epochs": 4,
-            "learnRate": 0.8,
-            "sigma": 0.1,
-            "learningRateDecay": 0.05,
-            "sigmaDecay": 0.2,
-            "bucket": "etsuko-io-som",
-            "path": "/results",
-            "title": name,
-            "image": b64_img,
-        }
+        width=1920,
+        height=1080,
+        scale=0.15,
+        epochs=3,
+        learnRate=0.8,
+        learningRateDecay=0.05,
+        sigma=0.3,
+        sigmaDecay=0.2,
+        bucket="etsuko-io-som",
+        path="results",
+        title=name,
+        image=b64_img,
     )
     return bp.json(indent=4)
 
@@ -68,6 +66,7 @@ if __name__ == "__main__":
 
     for f in files:
         with Image.open(f) as img:
+            img = img.convert("RGB")
             current_length = img.width * img.height
             if current_length <= training_length:
                 logger.info("Image already at correct size")

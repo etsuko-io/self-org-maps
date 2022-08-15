@@ -19,8 +19,8 @@ def get_dist_func(dist_sq, radius_sq):
     # dist_sq = 6, radius_sq = 4 : 0.47
 
     # Outcome between 0-1
-    # The higher the dist_sq, the lower the outcome
-    # The higher the radius, the higher the outcome
+    # The higher the dist_sq, the lower the outcome (far pixel = small update)
+    # The higher the radius, the higher the outcome (high radius = more effect)
     # The outcome determines how much a pixel's weight is adjusted
     # (closer to 1 is more adjustment)
     return np.exp(-dist_sq / 2 / radius_sq)

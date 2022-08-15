@@ -1,3 +1,7 @@
+import base64
+import io
+import math
+
 import numpy as np
 from loguru import logger
 from numpy import ndarray
@@ -10,13 +14,28 @@ from som.worker.domains.som import som_math
 class SomDomain:
     def __init__(
         self,
-        width,
-        height,
-        train_data,
+        width: int,
+        height: int,
+        scale: float,
+        b64_image: str,
     ):
-        self.width = width
-        self.height = height
-        self.train_data = train_data
+        self.width = math.ceil(width * scale)
+        self.height = math.ceil(height * scale)
+        self.train_data = self._load_train_data_from_base64(b64_image)
+
+    @property
+    def avg_dim(self):
+        return (self.width + self.height) / 2
+
+    @staticmethod
+    def _load_train_data_from_base64(base64_str: str):
+        try:
+            im = Image.open(io.BytesIO(base64.decodebytes(bytes(base64_str, "utf-8"))))
+        except Exception as e:
+            logger.error(f"Error loading image base64: {e}")
+            raise ValueError("Error loading base64 image")
+
+        return np.array(im).reshape((-1, 3))
 
     def get_random_grid(self):
         rand = np.random.RandomState(0)
@@ -25,36 +44,40 @@ class SomDomain:
 
     def train(
         self,
-        step: int,
+        step_divider: int,
         epochs: int,
         learn_rate: float,
         lr_decay: float,
-        radius_sq: int,
+        sigma: float,
         radius_decay: float,
     ):
         """
         Main routine for training an SOM. It requires an initialized SOM grid
         or a partially trained grid as parameter
 
-        :param radius_sq:
+        :param step_divider:
+        :param radius_decay:
+        :param sigma:
         :param lr_decay:
         :param epochs:
         :param learn_rate:
-        :param somap:
-        :param step:
         :return:
         """
-        complexity = epochs * self.width * self.height * len(self.train_data)
+        radius_sq = round(sigma * self.avg_dim)
+        len_train_data = len(self.train_data)
+        complexity = epochs * self.width * self.height * len_train_data
 
         logger.info(f"Complexity: {'{:,}'.format(complexity)}")
 
         somap = self.get_random_grid()
         logger.info(f"Starting entropy: {self.get_entropy(somap)}")
         rand = np.random.RandomState(0)
+        step = self.avg_dim / step_divider
         min_step = 3
         logger.info(f"start with step size: {step}")
         for epoch in range(epochs):
             logger.info(f" epoch {epoch}")
+            logger.info(f"Max. surrounding pixels to update per pixel: {pow(step, 2)}")
             rand.shuffle(self.train_data)
             # Update learning rate and radius.
             #  At epoch 0, values will stay identical.
@@ -63,6 +86,8 @@ class SomDomain:
             step = round(self.decay_value(step, radius_decay, epoch))
 
             for i, train_ex in enumerate(self.train_data):
+                if i % 500 == 0:
+                    logger.info(f"{i}/{len_train_data}...")
                 g, h = som_math.find_bmu(somap, train_ex)
                 somap = som_math.update_weights(
                     somap, train_ex, learn_rate, radius_sq, (g, h), step=step
