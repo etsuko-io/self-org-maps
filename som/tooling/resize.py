@@ -19,7 +19,21 @@ parser.add_argument("path", type=str, help="file/folder to resize")
 
 
 def downsize_image(img: Image, training_length: int):
-    scale = sqrt(current_length / training_length)
+    """
+    Downsize an image so that its number of pixels (w*h) matches the desired training
+    length.
+
+    Formula (x = downsize factor = unknown)
+    TL = training_length
+    w/x * h/x = TL
+    (w*h)/x^2 = TL
+    w*h       = TL * x^2
+    w*h / TL  = x^2
+    x         = sqrt(w*h/TL)
+
+    below, x = scale
+    """
+    scale = sqrt(img.width * img.height / training_length)
     return img.resize(size=(ceil(img.width / scale), ceil(img.height / scale)))
 
 
@@ -49,7 +63,8 @@ def make_request_body(name, b64_img):
 
 if __name__ == "__main__":
     """
-    python -m som.tooling.resize /Users/rubencronie/Dropbox/Documents/Development/ET55-four-insta-mockups/som-input  # noqa
+    Usage from project root:
+    $ python -m som.tooling.resize <path-to-dir>
     """
     args = parser.parse_args()
     training_length = 2500
@@ -77,16 +92,6 @@ if __name__ == "__main__":
                 img = downsize_image(img, training_length=5000)
 
             img_b64 = img_to_b64(img)
-            """
-            TL = training_length
-            w/x * h/x = TL
-            (w*h)/x^2 = TL
-            w*h       = TL * x^2
-            w*h / TL  = x^2
-            x         = sqrt(w*h/TL)
-
-            below, x = scale
-            """
 
         file_name = os.path.splitext(Path(f).name)[0]
         # project.save_file(content=img_b64, file_name=f"{file_name}.txt")

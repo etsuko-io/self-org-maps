@@ -12,22 +12,16 @@ def get_dist_func(dist_sq, radius_sq) -> float:
     :param radius_sq: radius around the BMU to be updated
     :return:
     """
-    # this one works very well with cache
-    # radius = Sigma
-
-    # "brush" function - decides how heavy the brush is to paint with
-
-    # dist_sq = 2, radius_sq = 2 : 0.60
-    # dist_sq = 2, radius_sq = 4 : 0.77
-    # dist_sq = 2, radius_sq = 6 : 0.84
-
-    # dist_sq = 2, radius_sq = 4 : 0.77
-    # dist_sq = 4, radius_sq = 4 : 0.60
-    # dist_sq = 6, radius_sq = 4 : 0.47
-
-    # Outcome between 0-1
+    # Analogous to the math behind a Photoshop "brush" tool;
+    #  it decides how strong the brush is to paint with.
     # The higher the dist_sq, the lower the outcome (far pixel = small update)
+    #   dist_sq = 2, radius_sq = 4 -> 0.77
+    #   dist_sq = 4, radius_sq = 4 -> 0.60
+    #   dist_sq = 6, radius_sq = 4 -> 0.47
     # The higher the radius, the higher the outcome (high radius = more effect)
+    #   dist_sq = 2, radius_sq = 2 -> 0.60
+    #   dist_sq = 2, radius_sq = 4 -> 0.77
+    #   dist_sq = 2, radius_sq = 6 -> 0.84
     # The outcome determines how much a pixel's weight is adjusted
     # (closer to 1 is more adjustment)
     return np.exp(-dist_sq / 2 / radius_sq)
@@ -41,8 +35,8 @@ def get_weight_change_value(learn_rate, dist_func, train_ex, current_weight):
 def get_dist_sq(i, j, g, h):
     # i - g = distance in pixels between x-axes
     # j - h = distance in pixels between y-axes
-    # pythagoras theorem gives distance squared. we don't do the final square
-    # root as it's not needed to compare distances.
+    # Pythagoras' theorem gives distance squared. The final square
+    # root is omitted as it's not needed to compare distances.
     return np.square(i - g) + np.square(j - h)
 
 

@@ -1,12 +1,10 @@
 [tool.black]
 target-version = ['py38']
 include-trailing-comma = true
-include = '\.pyi?$'
 exclude = '''
 /(
     \.eggs
   | \.git
-  | \.tox
   | \.venv
   | _build
   | build

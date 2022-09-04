@@ -61,6 +61,7 @@ def image_entropy(file_name, image_caption, image_height, image_width, DPI):
 
 
 if __name__ == "__main__":
+    # todo: argparse
     abs_path = "/Users/rubencronie/Dropbox/Documents/Development/self-org-maps/"
     # file = "input-images/waitress.jpg"
     file = "results/2022-06-13T145200/img_[lr-0.5]_[sigma-400].jpeg"

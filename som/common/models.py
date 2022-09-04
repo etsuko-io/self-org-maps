@@ -4,12 +4,6 @@ from fastapi_utils.api_model import APIModel
 from project_util.blueprint.blueprint import Blueprint
 
 
-"""
-The blueprint from the other art project u did was more extensive, it had actual
-methods
-"""
-
-
 class ApiBlueprint(APIModel, Blueprint):
     def export(self) -> str:
         return json.dumps(self.dict(), indent=4)
