@@ -4,7 +4,14 @@ import numpy as np
 
 
 @lru_cache
-def get_dist_func(dist_sq, radius_sq):
+def get_dist_func(dist_sq, radius_sq) -> float:
+    """
+    Returns a float between 0 and 1 indicating how strongly a particular pixel should
+    be updated
+    :param dist_sq: distance to the source pixel (BMU)
+    :param radius_sq: radius around the BMU to be updated
+    :return:
+    """
     # this one works very well with cache
     # radius = Sigma
 
@@ -89,14 +96,16 @@ def update_weights(somap, train_ex, learn_rate, radius_sq, bmu_coord, step=3):
     range_i = range(max(0, g - step), min(somap.shape[0], g + step))
     range_j = range(max(0, h - step), min(somap.shape[1], h + step))
     # Change all cells in a small neighborhood of BMU
+    skip = 0.01
     for i in range_i:
         for j in range_j:
             # distance of the current pixel to the BMU
             dist_sq = get_dist_sq(i, j, g, h)
 
-            # todo: where does this dist_func come from, what logic based on?
             dist_func = get_dist_func(dist_sq, radius_sq)
-
+            if dist_func < skip:
+                # skip really small update values
+                continue
             # adjust the color to a value in between its current value, and
             # the training example's value
             somap[i, j, :] += get_weight_change_value(

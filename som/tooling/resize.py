@@ -48,8 +48,11 @@ def make_request_body(name, b64_img):
 
 
 if __name__ == "__main__":
+    """
+    python -m som.tooling.resize /Users/rubencronie/Dropbox/Documents/Development/ET55-four-insta-mockups/som-input  # noqa
+    """
     args = parser.parse_args()
-    training_length = 5000
+    training_length = 2500
     path = Path(args.path).absolute()
     project_location = path.parent
     files = [path]

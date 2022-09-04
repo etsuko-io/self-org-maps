@@ -63,7 +63,7 @@ class SomDomain:
         :param learn_rate:
         :return:
         """
-        radius_sq = round(sigma * self.avg_dim)
+        radius_sq = round(sigma * pow(self.avg_dim, 2))
         len_train_data = len(self.train_data)
         complexity = epochs * self.width * self.height * len_train_data
 
@@ -81,9 +81,9 @@ class SomDomain:
             rand.shuffle(self.train_data)
             # Update learning rate and radius.
             #  At epoch 0, values will stay identical.
-            learn_rate = self.decay_value(learn_rate, lr_decay, epoch)
-            radius_sq = self.decay_value(radius_sq, radius_decay, epoch)
-            step = round(self.decay_value(step, radius_decay, epoch))
+            learn_rate = self.decay_value(learn_rate, lr_decay, epoch + 1)
+            radius_sq = self.decay_value(radius_sq, radius_decay, epoch + 1)
+            step = round(self.decay_value(step, radius_decay, epoch + 1))
 
             for i, train_ex in enumerate(self.train_data):
                 if i % 500 == 0:

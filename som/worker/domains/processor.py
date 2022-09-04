@@ -139,6 +139,7 @@ class SomBlueprintProcessor(BlueprintProcessor):
             sigma=blueprint.sigma,
             radius_decay=blueprint.sigma_decay,
         )
+        logger.info("Saving artefact...")
         artefact = Artefact(
             f"img_LR{blueprint.learn_rate}-R{blueprint.sigma}-{blueprint.title}.tiff",
             project=proj,
@@ -149,6 +150,7 @@ class SomBlueprintProcessor(BlueprintProcessor):
             file_name=Path(artefact.name),
             bucket=blueprint.bucket,
         )
+        logger.info("Saving superres(x9)...")
         artefact_superres = artefact.get_superres(9, new_project=proj.add_folder("x9"))
         proj.save_image(
             artefact_superres.data,
