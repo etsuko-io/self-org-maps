@@ -7,10 +7,10 @@ loguru
 matplotlib
 numpy
 opencv-contrib-python==4.5.5.64
-Pillow
+Pillow>=9.0.0
 pre-commit
 psutil
-pydantic
+pydantic>=1.10.0
 python-multipart
 pytransloadit==0.2.0
 uvicorn[standard]

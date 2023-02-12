@@ -37,8 +37,30 @@ To resize images for training:
     $ python -m som.tooling.resize <path-to-image-dir>
 
 
+# Project Architecture
 
-### References
+## Overview
+The project is comprised of two main components: an API and Celery for processing. It is designed to be deployed to AWS and can be interacted with through the API to process images.
+
+## Components
+- API: The entry point for interacting with the project.
+- Celery: Used for processing images.
+- SQS: Used for queue management in Celery.
+
+## Workflow
+1. A user makes a request to the API to process an image.
+2. The API offloads the processing to Celery.
+3. Celery processes the image and stores the result in an S3 bucket.
+4. Once processing is complete, the API sends an email with a link to the result.
+
+## Example Request
+An example of a request can be found in the `quickstart` folder.
+
+
+# Development
+- Run pre-commit install to install the pre-commit hook
+
+# References
 - Implementation based on an article by Mehreen Saeed:
   - https://stackabuse.com/self-organizing-maps-theory-and-implementation-in-python-with-numpy/
 - Orignial algorithm by Teuvo Kohonen:

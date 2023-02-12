@@ -9,13 +9,13 @@ repos:
       - id: mixed-line-ending
         args:
           - --fix=auto
-        language_version: python3.9
+        language_version: python3.10
       - id: requirements-txt-fixer
-        language_version: python3.9
+        language_version: python3.10
       - id: trailing-whitespace
-        language_version: python3.9
+        language_version: python3.10
       - id: end-of-file-fixer
-        language_version: python3.9
+        language_version: python3.10
       - id: check-added-large-files
         args: ["--maxkb=150000"]
       - id: check-yaml
@@ -24,12 +24,12 @@ repos:
         args: ["--remove"]
 
   - repo: https://github.com/pycqa/isort
-    rev: 5.9.3
+    rev: 5.12.0
     hooks:
       - id: isort
         name: isort (python)
         additional_dependencies: [toml]
-        language_version: python3.9
+        language_version: python3.10
       - id: isort
         name: isort (cython)
         types: [ cython ]
@@ -41,12 +41,12 @@ repos:
     rev: 21.7b0
     hooks:
       - id: black
-        language_version: python3.9
+        language_version: python3.10
 
-  - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.9.2
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.0.0
     hooks:
       - id: flake8
-        language_version: python3.9
+        language_version: python3.10
         args: ['--config=.flake8']
         additional_dependencies: [flake8-isort]
