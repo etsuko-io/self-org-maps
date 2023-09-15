@@ -1,21 +1,20 @@
+import argparse
 import json
 
 from loguru import logger
 
 from src.som.common.models import SomArtBlueprint
 from src.som.worker.domains.processor import SomBlueprintProcessor
-import argparse
+
 
 parser = argparse.ArgumentParser()
 
 parser.add_argument("--blueprint-path")
-# parser.add_argument("--input-folder")
-# parser.add_argument("--output-folder")
 
 if __name__ == "__main__":
     logger.info("CLI process started")
     args = parser.parse_args()
-    with open(args.blueprint_path, 'r') as f:
+    with open(args.blueprint_path, "r") as f:
         # Load the contents of the file as a JSON object
         blueprint = json.load(f)
 

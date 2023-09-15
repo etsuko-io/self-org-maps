@@ -39,10 +39,13 @@ To resize images for training:
 
 
 
-todo: simple command to execute training process with the CLI
+Image to base64
 
 
-    $ python -m som.api.views.cli <blueprint-json-path> <path-to-image-input-dir> <path-to-image-output-dir>
+Execute generation process with CLI command
+
+
+    $ python -m som.api.views.cli <blueprint-json-path>
 
 
 # Project Architecture

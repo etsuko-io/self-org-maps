@@ -28,14 +28,17 @@ class SomDomain:
         return (self.width + self.height) / 2
 
     @staticmethod
-    def _load_train_data_from_base64(base64_str: str):
+    def get_image_from_b64(base64_str: str) -> Image:
         try:
             im = Image.open(io.BytesIO(base64.decodebytes(bytes(base64_str, "utf-8"))))
         except Exception as e:
             logger.error(f"Error loading image base64: {e}")
             raise ValueError("Error loading base64 image")
+        return im
 
-        return np.array(im).reshape((-1, 3))
+    @staticmethod
+    def _load_train_data_from_base64(base64_str: str):
+        return np.array(SomDomain.get_image_from_b64(base64_str)).reshape((-1, 3))
 
     def get_random_grid(self):
         rand = np.random.RandomState(0)

@@ -2,15 +2,12 @@ from pathlib import Path
 
 import numpy as np
 from loguru import logger
+
 from src.project_util.artefact.artefact import Artefact
-from src.project_util.blueprint.processor import BlueprintProcessor
-from src.project_util.constants import S3, FILE_SYSTEM
 from src.project_util.naming.naming import NamingUtil
 from src.project_util.project.project import Project
-
 from src.som.common.models import SomArtBlueprint
 from src.som.worker.config.settings import WorkerSettings
-from src.som.worker.domains.graphics import GraphicsDomain
 from src.som.worker.domains.mail import Email
 from src.som.worker.domains.som.som import SomDomain
 
@@ -124,7 +121,7 @@ class SomBlueprintProcessor:
         logger.info("Processing started")
         proj = self._init_project(blueprint)
         self._log_plan(blueprint)
-        som_single = SomDomain(
+        domain = SomDomain(
             height=blueprint.height,
             width=blueprint.width,
             scale=blueprint.scale,
@@ -135,7 +132,7 @@ class SomBlueprintProcessor:
         # todo: if you want to save individual epochs, you need to return
         # per epoch, or return a list of epochs
         logger.info(f"LR{blueprint.learn_rate} - R{blueprint.sigma}")
-        result = som_single.train(
+        result = domain.train(
             step_divider=2,
             epochs=blueprint.epochs,
             learn_rate=blueprint.learn_rate,
@@ -152,6 +149,11 @@ class SomBlueprintProcessor:
         proj.save_image(
             artefact.data,
             file_name=Path(artefact.name),
+            bucket=blueprint.bucket,
+        )
+        proj.save_image(
+            domain.get_image_from_b64(blueprint.image),
+            file_name=Path("original.tiff"),
             bucket=blueprint.bucket,
         )
         logger.info("Saving superres(x9)...")

@@ -1,18 +1,17 @@
 import io
 import os
-from os import listdir, makedirs
-from os.path import isfile, join
+from os import makedirs
+from os.path import join
 from pathlib import Path
-from typing import Dict, List, Optional, TypeVar, Union
+from typing import Dict, Optional, TypeVar, Union
 
 import numpy as np
-from loguru import logger
 from PIL import Image
 
 from src.project_util.constants import FILE_SYSTEM, S3
-from src.project_util.image_utils import list_images, load_images
 from src.project_util.services.s3 import S3Client
 from src.som.common.models import SomArtBlueprint
+
 
 TProject = TypeVar("TProject", bound="Project")
 
@@ -26,7 +25,6 @@ class Project:
     ):
         self._parent_dir = parent_dir
         self._name = name
-        # self._project_dir: Path = self._get_project_dir()
         self.folders: Dict[str, Project] = {}
         self._s3_client = None
         self.blueprint = blueprint
@@ -49,34 +47,9 @@ class Project:
 
     def _make_project_dir(self):
         if self.blueprint.backend == FILE_SYSTEM:
-            makedirs(self.path, exist_ok=True)
+            makedirs(self.blueprint.path, exist_ok=True)
         else:
             raise ValueError(f"Unsupported backend: {self.blueprint.backend}")
-
-    def create_file_name(self, name: str) -> str:
-        """
-        Create a filename relative to the current project directory.
-        Just an implementation of os.path.join() for the current project dir.
-        :param name:
-        :return:
-        """
-        return os.path.join(self._project_dir, name)
-
-    def get_file_names(self):
-        """
-        Get all filenames in current project directory
-        :return:
-        """
-        return [
-            join(self.path, f) for f in listdir(self.path) if isfile(join(self.path, f))
-        ]
-
-    def load_images(self) -> List[np.ndarray]:
-        # Candidate for moving to an image-specific project lib
-        paths = list_images(self.path)
-        logger.debug(f"Project path: {self.path}")
-        logger.debug(f"Loading image paths: {paths}")
-        return load_images(paths)
 
     def _require_backend(self, backend):
         if self.blueprint.backend != backend:
@@ -169,18 +142,6 @@ class Project:
         )
         return result.get("ETag")
 
-    def save_blueprint(self, file_name: Union[str, Path], bucket: Optional[str] = None):
-        if not self.blueprint:
-            raise ValueError("Blueprint not set")
-
-        if self.blueprint.backend == S3:
-            self._save_blueprint_to_s3(
-                bucket=bucket, path=os.path.join(self.path, file_name)
-            )
-
-        else:
-            raise NotImplementedError(f"Backend {self.blueprint.backend} not supported yet")
-
     def _save_blueprint_to_s3(self, bucket, path):
         data = self.blueprint.export()
         self.s3_client.save(
@@ -188,9 +149,3 @@ class Project:
             bucket=bucket,
             path=path,
         )
-
-    def remove_folder(self, name: str) -> None:
-        # todo: use abspath
-        if self.blueprint.backend == FILE_SYSTEM:
-            os.removedirs(self.path.joinpath(name))
-        del self.folders[name]

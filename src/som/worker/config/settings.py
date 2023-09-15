@@ -1,4 +1,5 @@
 from typing import Optional
+
 from pydantic import BaseSettings
 
 
@@ -12,4 +13,4 @@ class WorkerSettings(BaseSettings):
     has_gui: bool
 
     class Config:
-        env_file = '.env'
+        env_file = ".env"
