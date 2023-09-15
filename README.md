@@ -1,7 +1,8 @@
 # Self Organizing Maps
 
 This app takes an image and transforms it into a new image, containing the original colors of
-the input image, but organized by color.
+the input image, but organized by color. The process is based on the self-organizing maps algorithm
+by Teuvo Kohonen.
 
 
 
@@ -34,7 +35,14 @@ Output
 To resize images for training:
 
 
-    $ python -m som.tooling.resize <path-to-image-dir>
+    $ python -m som.tooling.resize <path-to-image-dir> <pixels>
+
+
+
+todo: simple command to execute training process with the CLI
+
+
+    $ python -m som.api.views.cli <blueprint-json-path> <path-to-image-input-dir> <path-to-image-output-dir>
 
 
 # Project Architecture
