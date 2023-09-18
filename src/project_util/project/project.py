@@ -21,7 +21,7 @@ class Project:
         self,
         name: str,
         parent_dir: Path,
-        blueprint: SomArtBlueprint,
+        blueprint: Optional[SomArtBlueprint] = None,
     ):
         self._parent_dir = parent_dir
         self._name = name

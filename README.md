@@ -32,20 +32,29 @@ Output
 
 
 ### Preparing training data
-To resize images for training:
+Large images take a long time to process, because they contain a huge amount of pixels.
+Therefore, a tool is included to resize the images.
+
+- The first argument provides a path to a directory with one or more images.
+- The second argument sets the desired amount of total pixels in the resized image.
 
 
-    $ python -m som.tooling.resize <path-to-image-dir> <pixels>
+    $ python -m src.som.tooling.resize <path-to-image-dir> <pixels>
+
+
+e.g.:
+
+    $ python -m src.som.tooling.resize ~/Desktop/images <pixels>
 
 
 
-Image to base64
+### Image to base64
 
 
 Execute generation process with CLI command
 
 
-    $ python -m som.api.views.cli <blueprint-json-path>
+    $ python -m src.som.api.views.cli <blueprint-json-path>
 
 
 # Project Architecture

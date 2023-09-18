@@ -1,3 +1,4 @@
+import uuid
 from pathlib import Path
 
 import numpy as np
@@ -141,11 +142,14 @@ class SomBlueprintProcessor:
             radius_decay=blueprint.sigma_decay,
         )
         logger.info("Saving artefact...")
+        random = str(uuid.uuid4())[:6]
         artefact = Artefact(
-            f"img_LR{blueprint.learn_rate}-R{blueprint.sigma}-{blueprint.title}.tiff",
+            f"img_LR{blueprint.learn_rate}-R{blueprint.sigma}-{blueprint.title}-"
+            f"{random}.tiff",
             project=proj,
             data=np.uint8(result),
         )
+        logger.info(f"Saved in: file://{artefact.project.blueprint.path}")
         proj.save_image(
             artefact.data,
             file_name=Path(artefact.name),
@@ -165,7 +169,7 @@ class SomBlueprintProcessor:
         )
         proj.save_file(
             content=blueprint.json(),
-            file_name="blueprint.json",
+            file_name=f"blueprint-{random}.json",
             bucket=blueprint.bucket,
         )
         self._make_email(blueprint).send()

@@ -8,15 +8,19 @@ from pathlib import Path
 
 from loguru import logger
 from PIL import Image
-from project_util.project.project import Project
 
-from som.common.models import SomArtBlueprint
+from src.som.common.models import SomArtBlueprint
 
 
 parser = argparse.ArgumentParser(description="Resize images for training.")
 
 parser.add_argument("path", type=str, help="file/folder to resize")
 parser.add_argument("pixels", type=int, help="number of pixels in result")
+
+"""
+Todo: if you really want a project tool, it should be a super bare bones file manager.
+However, it should support 2 backends (S3 and File system).
+"""
 
 
 def downsize_image(img: Image, training_length: int):
@@ -51,6 +55,7 @@ def make_request_body(name, b64_img):
         scale=0.15,
         epochs=3,
         learnRate=0.8,
+        backend="FILE_SYSTEM",
         learningRateDecay=0.05,
         sigma=0.3,
         sigmaDecay=0.2,
@@ -62,11 +67,19 @@ def make_request_body(name, b64_img):
     return bp.json(indent=4)
 
 
+def save_file(
+    self,
+    content: str,
+    file_name: str,
+    path: str,
+) -> str:
+    path = join(path, file_name)
+    with open(path, "w") as file:
+        file.write(content)
+    return path
+
+
 if __name__ == "__main__":
-    """
-    Usage from project root:
-    $ python -m som.tooling.resize <path-to-dir>
-    """
     args = parser.parse_args()
     training_length = args.pixels
     path = Path(args.path).absolute()
@@ -80,9 +93,6 @@ if __name__ == "__main__":
             if isfile(join(path, f)) and not f.startswith(".")
         ]
 
-    project = Project(name="blueprints", parent_dir=path)
-    print(f"project location: {project.path}")
-
     for f in files:
         with Image.open(f) as img:
             img = img.convert("RGB")
@@ -95,8 +105,10 @@ if __name__ == "__main__":
             img_b64 = img_to_b64(img)
 
         file_name = os.path.splitext(Path(f).name)[0]
-        # project.save_file(content=img_b64, file_name=f"{file_name}.txt")
-        project.save_file(
-            content=make_request_body(name=file_name, b64_img=img_b64),
-            file_name=f"{file_name}.txt",
+        output_path = project_location.joinpath(file_name + ".txt")
+        with open(output_path, "w") as file:
+            file.write(img_b64)
+        logger.info(
+            f"Resized image saved as base64 in folder: file://{project_location}"
         )
+        logger.info(f"File: file://{output_path.absolute()}")
